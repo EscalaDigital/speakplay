@@ -2,6 +2,7 @@ package com.gaemir.speakplay;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.View;
@@ -13,7 +14,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     Animation animaBird, animaCorazon, animaSuperman, animaCofre, animaIronman;
-    ImageView bird, corazon, superman, cofre, ironman;
+    ImageView bird, corazon, superman, cofre, ironman, start;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +27,11 @@ public class MainActivity extends AppCompatActivity {
         superman = (ImageView) findViewById(R.id.superman);
         cofre = (ImageView) findViewById(R.id.cofre);
         ironman = (ImageView) findViewById(R.id.ironman);
+        start = (ImageView) findViewById(R.id.botonstart);
+
+
         ironman.setVisibility(View.INVISIBLE);
+
 
 
         animaBird = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.bird);
@@ -39,6 +44,9 @@ public class MainActivity extends AppCompatActivity {
         superman.startAnimation(animaSuperman);
         corazon.startAnimation(animaCorazon);
         cofre.startAnimation(animaCofre);
+
+
+        Intent intent = new Intent(this, MainUser.class);
 
 
         this.cofre.setOnClickListener(new View.OnClickListener() {
@@ -59,5 +67,22 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        this.start.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+
+                startActivity(intent);
+
+            }
+
+        });
+
+
+
+
+
     }
 }
