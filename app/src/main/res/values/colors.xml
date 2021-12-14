@@ -8,5 +8,5 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="fondo">#5b92f6</color>
-    <color name="fondoSecundario">#00008B</color>//color de fondo
+    <color name="fondoSecundario">#00008B</color>
 </resources>

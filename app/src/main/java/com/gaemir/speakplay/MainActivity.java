@@ -2,6 +2,7 @@ package com.gaemir.speakplay;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.TypedValue;
@@ -9,6 +10,8 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -20,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
 
         bird = (ImageView) findViewById(R.id.bird);
@@ -71,11 +75,16 @@ public class MainActivity extends AppCompatActivity {
         this.start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-
-
                 startActivity(intent);
+            }
 
+        });
+
+
+        this.corazon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, RegistroActivity.class));
             }
 
         });
@@ -84,5 +93,12 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
+
+
     }
+
+
+
+
 }
