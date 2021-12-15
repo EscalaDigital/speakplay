@@ -3,6 +3,10 @@ package com.gaemir.speakplay;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
@@ -10,6 +14,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.TypedValue;
 import android.view.Menu;
 
 import android.view.MenuInflater;
@@ -20,9 +25,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class MainUser extends AppCompatActivity {
 
     private Toolbar toolbar;
+    CircleImageView logoPerfil;
 
     //Elementos para el recyclerview horizontal
     RecyclerView recyclerViewHorizontal;
@@ -36,7 +44,7 @@ public class MainUser extends AppCompatActivity {
     //Elementos para el recyclerview Vertical
 
 
-        //todo
+    //todo
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,32 +53,42 @@ public class MainUser extends AppCompatActivity {
 
         toolbar = findViewById(R.id.toolbarPrincipal);
 
+        //tomamos la imagen y la insertamos en la toolbar
 
-        toolbar.setSubtitle("Test Subtitle");
+        logoPerfil = findViewById(R.id.imagenPerfil);
+        Drawable drawable2 = getResources().getDrawable(R.drawable.person1);
+        logoPerfil.setImageDrawable(drawable2);
         toolbar.inflateMenu(R.menu.menu);
+
+        this.logoPerfil.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainUser.this, PerfilActivity.class));
+            }
+        });
+
+
+
 
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
 
             @Override
             public boolean onMenuItemClick(MenuItem item) {
 
-                if(item.getItemId()==R.id.menufiltros)
-                {
+                if (item.getItemId() == R.id.menufiltros) {
                     startActivity(new Intent(MainUser.this, FiltrosActivity.class));
-                }
-                else if(item.getItemId()== R.id.menumapa)
-                {
+                } else if (item.getItemId() == R.id.menumapa) {
                     startActivity(new Intent(MainUser.this, MapaActivity.class));
 
 
-                }
-                else{
+                } else {
                     // do something
                 }
 
                 return false;
             }
         });
+
 
         //Reciclerview Horizontal
         recyclerViewHorizontal = (RecyclerView) findViewById(R.id.recyclerview_horizontal);
@@ -85,7 +103,7 @@ public class MainUser extends AppCompatActivity {
 
         //cargar el layout de forma horizontal
 
-        HorizontalLayout = new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false);
+        HorizontalLayout = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         recyclerViewHorizontal.setLayoutManager(HorizontalLayout);
 
         // añador elementos del adapter
@@ -107,14 +125,5 @@ public class MainUser extends AppCompatActivity {
 
 
 
-
-
-
-
-
-
-
-
-
-
 }
+
