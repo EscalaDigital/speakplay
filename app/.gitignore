@@ -1,1 +1,7 @@
 /build
+/src/main/res/values-night/
+/src/main/res/values-w600dp/
+/src/main/res/values-land/
+/src/main/res/values/
+/src/debug/res/values/
+/src/main/res/values-w1240dp/
