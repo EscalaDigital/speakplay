@@ -4,31 +4,152 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".PerfilActivity">
-
-    <androidx.cardview.widget.CardView
-        android:layout_width="275dp"
-        android:layout_height="275dp"
-        android:layout_margin="5dp"
-        android:elevation="10dp"
-        app:cardCornerRadius="118dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.096">
+    tools:context=".PerfilActivity"
+    android:background="@color/fondo">
 
 
-        <ImageView
-            android:id="@+id/roundedImageView"
+    <ScrollView
+        android:id="@+id/scrollView2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            tools:layout_editor_absoluteX="118dp"
+            tools:layout_editor_absoluteY="20dp">
 
-            android:background="@color/white"
-            android:scaleType="centerCrop"
-            app:srcCompat="@drawable/person1" />
+            <androidx.cardview.widget.CardView
+                android:layout_width="175dp"
+                android:layout_height="175dp"
+                android:layout_margin="5dp"
+                android:elevation="10dp"
+                app:cardCornerRadius="148dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.03">
 
-    </androidx.cardview.widget.CardView>
+
+                <ImageView
+                    android:id="@+id/roundedImageView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+
+                    android:background="@color/white"
+                    android:scaleType="centerCrop"
+                    app:srcCompat="@drawable/person1" />
+
+            </androidx.cardview.widget.CardView>
+
+
+            <EditText
+                android:id="@+id/usuario"
+                android:layout_width="350dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textPersonName"
+                android:text="Usuario"
+                android:textStyle="bold"
+                android:typeface="normal"
+                tools:layout_editor_absoluteX="102dp"
+                tools:layout_editor_absoluteY="79dp" />
+
+            <EditText
+                android:id="@+id/clave"
+                android:layout_width="350dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textPassword"
+                android:text="Clave"
+                android:textStyle="bold"
+                android:typeface="normal"
+                tools:layout_editor_absoluteX="102dp"
+                tools:layout_editor_absoluteY="79dp" />
+
+
+            <EditText
+                android:id="@+id/nombre"
+                android:layout_width="350dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textPersonName"
+                android:text="Nombre"
+                android:textStyle="bold"
+                android:typeface="normal"
+                tools:layout_editor_absoluteX="102dp"
+                tools:layout_editor_absoluteY="79dp" />
+
+            <EditText
+                android:id="@+id/apellidos"
+                android:layout_width="350dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textPersonName"
+                android:text="Apellidos"
+                android:textStyle="bold"
+                android:typeface="normal"
+                tools:layout_editor_absoluteX="102dp"
+                tools:layout_editor_absoluteY="79dp" />
+
+            <EditText
+                android:id="@+id/email"
+                android:layout_width="350dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textPersonName"
+                android:text="E-mail"
+                android:textStyle="bold"
+                android:typeface="normal"
+                tools:layout_editor_absoluteX="102dp"
+                tools:layout_editor_absoluteY="79dp" />
+
+            <EditText
+                android:id="@+id/editTextNumberSigned"
+                android:layout_width="350dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="numberSigned"
+                android:text="Edad"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/sexo"
+                android:layout_width="350dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textPersonName"
+                android:text="Sexo"
+                android:textStyle="bold"
+                android:typeface="normal"
+                tools:layout_editor_absoluteX="102dp"
+                tools:layout_editor_absoluteY="79dp" />
+
+            <EditText
+                android:id="@+id/usuarioDiscord"
+                android:layout_width="350dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textPersonName"
+                android:text="Usuario Discord"
+                android:textStyle="bold"
+                android:typeface="normal"
+                tools:layout_editor_absoluteX="102dp"
+                tools:layout_editor_absoluteY="79dp" />
+
+            <Spinner
+                android:id="@+id/selectorJuegos"
+                android:layout_width="350dp"
+                android:layout_height="47dp" />
+
+
+        </LinearLayout>
+
+    </ScrollView>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

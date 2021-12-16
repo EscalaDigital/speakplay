@@ -16,6 +16,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Speakplay">
         <activity
+            android:name=".VecinoMain"
+            android:exported="false" />
+        <activity
             android:name=".PerfilActivity"
             android:exported="false" />
         <activity
