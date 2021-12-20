@@ -3,6 +3,7 @@ package com.gaemir.speakplay;
 import androidx.appcompat.app.AppCompatActivity;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.TypedValue;
@@ -11,6 +12,9 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -18,13 +22,22 @@ public class MainActivity extends AppCompatActivity {
 
     Animation animaBird, animaCorazon, animaSuperman, animaCofre, animaIronman;
     ImageView bird, corazon, superman, cofre, ironman, start;
+    String Servidor, basedatos, usuario, clave;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //Obtenemos los datos de la BD
 
+        DatosBD datosDB = new DatosBD(this);
+
+        System.out.println(datosDB.getServidor(0) + ", " + datosDB.getServidor(1) + ", " + datosDB.getServidor(2) + ", " + datosDB.getServidor(3));
+        Servidor = datosDB.getServidor(0);
+        basedatos = datosDB.getServidor(1);
+        usuario = datosDB.getServidor(2);
+        clave = datosDB.getServidor(2);
 
         bird = (ImageView) findViewById(R.id.bird);
         corazon = (ImageView) findViewById(R.id.corazon);
@@ -35,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
 
 
         ironman.setVisibility(View.INVISIBLE);
-
 
 
         animaBird = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.bird);
@@ -90,15 +102,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-
-
-
-
-
-
     }
-
-
 
 
 }
