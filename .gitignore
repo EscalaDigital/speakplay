@@ -1,9 +1,16 @@
 # Default ignored files
 idea/
-
 /app/src/main/res/values/google_maps_api.xml
 /app/src/debug/res/values/google_maps_api.xml
 /app/src/main/res/values-land/google_maps_api.xml
 /app/src/main/res/values-w600dp/google_maps_api.xml
 /app/src/main/res/values-night/google_maps_api.xml
 /app/src/main/res/values-w1240dp/google_maps_api.xml
+/app/src/main/res/values-night/
+/app/src/main/res/values-w600dp/
+/app/src/main/res/values-land/
+/app/src/main/res/values/
+/app/src/debug/res/values/
+/app/src/main/res/values-w1240dp/
+/app/src/main/res/raw/
+
