@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
         ironman.setVisibility(View.INVISIBLE);
 
-
+        //cargar animaciones (anim) en xml
         animaBird = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.bird);
         animaSuperman = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.superman);
         animaCorazon = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.corazon);
