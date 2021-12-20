@@ -39,8 +39,7 @@ public class MainActivity extends AppCompatActivity {
         usuario = datosDB.getServidor(2);
         clave = datosDB.getServidor(2);
 
-
-
+        //elementos de la pantalla
         bird = (ImageView) findViewById(R.id.bird);
         corazon = (ImageView) findViewById(R.id.corazon);
         superman = (ImageView) findViewById(R.id.superman);
