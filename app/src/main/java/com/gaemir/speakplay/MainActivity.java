@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         corazon.startAnimation(animaCorazon);
         cofre.startAnimation(animaCofre);
 
-
+        //intent para llamar nueva activity
         Intent intent = new Intent(this, MainUser.class);
 
 
