@@ -46,8 +46,6 @@ public class MainActivity extends AppCompatActivity {
         cofre = (ImageView) findViewById(R.id.cofre);
         ironman = (ImageView) findViewById(R.id.ironman);
         start = (ImageView) findViewById(R.id.botonstart);
-
-
         ironman.setVisibility(View.INVISIBLE);
 
         //cargar animaciones (anim) en xml
