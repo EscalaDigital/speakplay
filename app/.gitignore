@@ -5,6 +5,7 @@
 /app/src/main/res/values-w600dp/google_maps_api.xml
 /app/src/main/res/values-night/google_maps_api.xml
 /app/src/main/res/values-w1240dp/google_maps_api.xml
+/app/src/release/res/values/google_maps_api.xml
 /src/main/res/values-night/
 /src/main/res/values-w600dp/
 /src/main/res/values-land/
