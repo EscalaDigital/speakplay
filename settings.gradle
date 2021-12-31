@@ -8,3 +8,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = "speakplay"
 include ':app'
+include ':app:lib'

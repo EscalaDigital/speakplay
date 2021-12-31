@@ -29,15 +29,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //Obtenemos los datos de la BD
 
-        DatosBD datosDB = new DatosBD(this);
-
-        System.out.println(datosDB.getServidor(0) + ", " + datosDB.getServidor(1) + ", " + datosDB.getServidor(2) + ", " + datosDB.getServidor(3));
-        Servidor = datosDB.getServidor(0);
-        basedatos = datosDB.getServidor(1);
-        usuario = datosDB.getServidor(2);
-        clave = datosDB.getServidor(2);
 
         //elementos de la pantalla
         bird = (ImageView) findViewById(R.id.bird);

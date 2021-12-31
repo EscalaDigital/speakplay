@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/speakplay.iml" filepath="$PROJECT_DIR$/.idea/modules/speakplay.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/speakplay.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/speakplay.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/lib/speakplay.app.lib.iml" filepath="$PROJECT_DIR$/.idea/modules/app/lib/speakplay.app.lib.iml" />
     </modules>
   </component>
 </project>
