@@ -25,13 +25,15 @@
         app:layout_constraintTop_toTopOf="@+id/imageView4"
         app:srcCompat="@drawable/raton" />
 
+
+
     <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:id="@+id/scrollView3"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         tools:ignore="SpeakableTextPresentCheck">
+
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -43,19 +45,17 @@
                 android:id="@+id/imageView"
                 android:layout_width="230dp"
                 android:layout_height="80dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.497"
-                app:layout_constraintStart_toStartOf="parent"
-                app:srcCompat="@drawable/registro"
-                tools:layout_editor_absoluteY="-1dp" />
+
+                app:srcCompat="@drawable/registro" />
 
             <EditText
                 android:id="@+id/usuario"
                 android:layout_width="350dp"
                 android:layout_height="wrap_content"
                 android:ems="10"
+                android:hint="Usuario"
                 android:inputType="textPersonName"
-                android:text="Usuario"
+
                 android:textStyle="bold"
                 android:typeface="normal"
                 tools:layout_editor_absoluteX="102dp"
@@ -66,8 +66,8 @@
                 android:layout_width="350dp"
                 android:layout_height="wrap_content"
                 android:ems="10"
+                android:hint="Clave"
                 android:inputType="textPassword"
-                android:text="Clave"
                 android:textStyle="bold"
                 android:typeface="normal"
                 tools:layout_editor_absoluteX="102dp"
@@ -79,8 +79,8 @@
                 android:layout_width="350dp"
                 android:layout_height="wrap_content"
                 android:ems="10"
+                android:hint="Nombre"
                 android:inputType="textPersonName"
-                android:text="Nombre"
                 android:textStyle="bold"
                 android:typeface="normal"
                 tools:layout_editor_absoluteX="102dp"
@@ -91,8 +91,8 @@
                 android:layout_width="350dp"
                 android:layout_height="wrap_content"
                 android:ems="10"
+                android:hint="Apellidos"
                 android:inputType="textPersonName"
-                android:text="Apellidos"
                 android:textStyle="bold"
                 android:typeface="normal"
                 tools:layout_editor_absoluteX="102dp"
@@ -103,33 +103,57 @@
                 android:layout_width="350dp"
                 android:layout_height="wrap_content"
                 android:ems="10"
+                android:hint="E-mail"
                 android:inputType="textPersonName"
-                android:text="E-mail"
                 android:textStyle="bold"
                 android:typeface="normal"
                 tools:layout_editor_absoluteX="102dp"
                 tools:layout_editor_absoluteY="79dp" />
 
             <EditText
-                android:id="@+id/editTextNumberSigned"
+                android:id="@+id/edad"
                 android:layout_width="350dp"
                 android:layout_height="wrap_content"
-                android:textStyle="bold"
                 android:ems="10"
+                android:hint="Edad"
                 android:inputType="numberSigned"
-                android:text="Edad" />
+                android:textStyle="bold" />
 
-            <EditText
-                android:id="@+id/sexo"
-                android:layout_width="350dp"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:inputType="textPersonName"
-                android:text="Sexo"
-                android:textStyle="bold"
-                android:typeface="normal"
-                tools:layout_editor_absoluteX="102dp"
-                tools:layout_editor_absoluteY="79dp" />
+            <RadioGroup
+                android:id="@+id/grupoSexo"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+
+                android:gravity="center|center_horizontal">
+
+                <TextView
+                    android:id="@+id/textView6"
+                    android:layout_width="350dp"
+                    android:layout_height="wrap_content"
+                    android:text="Sexo" />
+
+                <RadioButton
+                    android:id="@+id/radioButton"
+                    android:layout_width="350dp"
+                    android:layout_height="wrap_content"
+                    android:text="Hombre" />
+
+                <RadioButton
+                    android:id="@+id/radioButton2"
+                    android:layout_width="350dp"
+                    android:layout_height="wrap_content"
+                    android:text="Mujer" />
+
+                <RadioButton
+                    android:id="@+id/radioButton3"
+                    android:layout_width="350dp"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="No seleccionar" />
+            </RadioGroup>
+
+
 
             <EditText
                 android:id="@+id/usuarioDiscord"
@@ -137,7 +161,7 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:inputType="textPersonName"
-                android:text="Usuario Discord"
+                android:hint="Usuario Discord"
                 android:textStyle="bold"
                 android:typeface="normal"
                 tools:layout_editor_absoluteX="102dp"
@@ -155,7 +179,7 @@
                 android:text="Términos de uso" />
 
             <ImageView
-                android:id="@+id/imageView6"
+                android:id="@+id/botonRegistro"
                 android:layout_width="328dp"
                 android:layout_height="50dp"
                 app:srcCompat="@drawable/botonregistro" />

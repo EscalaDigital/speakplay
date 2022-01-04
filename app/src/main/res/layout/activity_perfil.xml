@@ -109,7 +109,7 @@
                 tools:layout_editor_absoluteY="79dp" />
 
             <EditText
-                android:id="@+id/editTextNumberSigned"
+                android:id="@+id/edad"
                 android:layout_width="350dp"
                 android:layout_height="wrap_content"
                 android:ems="10"
