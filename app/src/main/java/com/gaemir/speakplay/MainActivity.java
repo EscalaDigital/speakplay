@@ -160,16 +160,9 @@ public class MainActivity extends AppCompatActivity {
 
             switch (estado) {
                 case "1": // EXITO
-                    // Obtener array "metas" Json
-
 
                     startActivity(new Intent(MainActivity.this, MainUser.class));
-                    // Parsear con Gson
-                    // Meta[] metas = gson.fromJson(mensaje.toString(), Meta[].class);
-                    // Inicializar adaptador
-                    // adapter = new MetaAdapter(Arrays.asList(metas), getActivity());
-                    // Setear adaptador a la lista
-                    // lista.setAdapter(adapter);
+
                     break;
                 case "2": // FALLIDO
                     String mensaje2 = response.getString("mensaje");

@@ -35,6 +35,7 @@ public class MainUser extends AppCompatActivity {
     //Elementos para el recyclerview horizontal
     RecyclerView recyclerViewHorizontal;
     ArrayList<String> source;
+    ArrayList<Drawable> imagenesAmigos;
     RecyclerView.LayoutManager RecyclerViewLayoutManager;
     Adapter adapter;
     LinearLayoutManager HorizontalLayout;
@@ -56,7 +57,7 @@ public class MainUser extends AppCompatActivity {
         //tomamos la imagen y la insertamos en la toolbar
 
         logoPerfil = findViewById(R.id.imagenPerfil);
-        Drawable drawable2 = getResources().getDrawable(R.drawable.person1);
+        Drawable drawable2 = getResources().getDrawable(R.drawable.a1);
         logoPerfil.setImageDrawable(drawable2);
         toolbar.inflateMenu(R.menu.menu);
 
@@ -99,7 +100,7 @@ public class MainUser extends AppCompatActivity {
         AddItemsToRecyclerViewArrayList();
 
         // añadir elementos al adaptador
-        adapter = new Adapter(source);
+        adapter = new Adapter(source, imagenesAmigos);
 
         //cargar el layout de forma horizontal
 
@@ -114,13 +115,22 @@ public class MainUser extends AppCompatActivity {
     public void AddItemsToRecyclerViewArrayList() {
         // Adding items to ArrayList
         source = new ArrayList<>();
-        source.add("gfg");
-        source.add("is");
-        source.add("best");
-        source.add("site");
-        source.add("for");
-        source.add("interview");
-        source.add("preparation");
+        source.add("RedFire");
+        source.add("Starman");
+        source.add("Gaemir");
+        source.add("Holilad");
+        source.add("Dangerman");
+        source.add("Lolipower");
+        source.add("Goku");
+
+        imagenesAmigos = new ArrayList<>();
+        imagenesAmigos.add(getDrawable(R.drawable.a2));
+        imagenesAmigos.add(getDrawable(R.drawable.a3));
+        imagenesAmigos.add(getDrawable(R.drawable.a4));
+        imagenesAmigos.add(getDrawable(R.drawable.a5));
+        imagenesAmigos.add(getDrawable(R.drawable.a6));
+        imagenesAmigos.add(getDrawable(R.drawable.a7));
+        imagenesAmigos.add(getDrawable(R.drawable.a8));
     }
 
 
