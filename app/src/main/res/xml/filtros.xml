@@ -8,12 +8,10 @@
 
     <PreferenceCategory android:title="Juegos">
 
-        <MultiSelectListPreference
-            android:defaultValue="@android:array/organizationTypes"
-            android:entries="@android:array/organizationTypes"
-            android:entryValues="@android:array/organizationTypes"
-            android:key="multi_select_juegos"
-            android:title="Multi select list preference" />
+        <ListPreference
+            android:key="juegos_preferences"
+            android:title="Juego"
+          />
 
     </PreferenceCategory>
 
@@ -31,11 +29,10 @@
             android:title="Mujeres" />
 
 
-
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="check_box_oculto"
-            android:title="Oculto" />
+            android:title="Sexo oculto" />
 
         <SeekBarPreference
             android:key="seek_bar_minimo"
@@ -46,7 +43,7 @@
             android:min="18" />
 
         <SeekBarPreference
-            android:key="seek_bar_máximo"
+            android:key="seek_bar_maximo"
             android:title="Máximo"
             app:showSeekBarValue="true"
 

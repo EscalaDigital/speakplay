@@ -2,13 +2,16 @@ package com.gaemir.speakplay;
 
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.appcompat.widget.Toolbar;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -67,6 +70,13 @@ public class MainUser extends AppCompatActivity {
         Drawable drawable2 = getResources().getDrawable(R.drawable.a1);
         logoPerfil.setImageDrawable(drawable2);
         toolbar.inflateMenu(R.menu.menu);
+
+
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+
+        Log.i("", "Opción 1: " + pref.getBoolean("check_box_hombres", false));
+        Log.i("", "Opción 2: " + pref.getInt("seek_bar_maximo", 0));
+
 
 
 
