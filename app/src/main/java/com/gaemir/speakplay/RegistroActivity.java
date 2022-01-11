@@ -59,6 +59,8 @@ public class RegistroActivity extends AppCompatActivity {
         edad = (EditText) findViewById(R.id.edad);
         usuarioDiscord = (EditText) findViewById(R.id.usuarioDiscord);
 
+
+
         sexoGrupo = (RadioGroup) findViewById(R.id.grupoSexo);
         terminos = (CheckBox) findViewById(R.id.checkBox);
 
@@ -93,7 +95,7 @@ public class RegistroActivity extends AppCompatActivity {
                 } else {
 
                     if (terminos.isChecked()) {
-                        int numeroSexo = 2, numeroEdad;
+                        int numeroSexo = 2, numeroEdad, avatar;
                         String textoUsuario, textoClave, textoNombre, textoApellidos, TextoEmail, textousuarioDiscord, textoJuego;
 
                         textoUsuario = usuario.getText().toString();
@@ -105,6 +107,15 @@ public class RegistroActivity extends AppCompatActivity {
                         textousuarioDiscord = usuarioDiscord.getText().toString();
                         textoJuego = spinner.getSelectedItem().toString();
 
+
+                        //arreglamos posibles espacios en blanco
+                        textoUsuario= textoUsuario.replaceAll(" ", "%20");
+                        textoClave= textoClave.replaceAll(" ", "%20");
+                        textoNombre= textoNombre.replaceAll(" ", "%20");
+                        textoApellidos = textoApellidos.replaceAll(" ", "%20");
+                        textousuarioDiscord= textousuarioDiscord.replaceAll(" ", "%20");
+
+
                         int id_juego = controlJuego.get(textoJuego);
 
                         int selectedId = sexoGrupo.getCheckedRadioButtonId();
@@ -114,17 +125,20 @@ public class RegistroActivity extends AppCompatActivity {
 
                         if (sexo.getText().toString().matches("Hombre")) {
                             numeroSexo = 0;
+                            avatar = (int)(Math.random()*9 + 1);
                         } else if (sexo.getText().toString().matches("Mujer")) {
                             numeroSexo = 1;
+                            avatar = (int)(Math.random()*(14-10+1)+10);
                         } else {
                             numeroSexo = 2;
+                            avatar = 10;
                         }
 
 
 
                         try {
                             System.err.println("Juego elegido: " + id_juego);
-                            procesarPeticion(RegistroActivity.this, Peticion.INSERT_DATAUSER + "?user=" + textoUsuario + "&pass=" + textoClave + "&nombre=" + textoNombre + "&apellidos=" + textoApellidos + "&email=" + TextoEmail + "&edad=" + numeroEdad + "&sexo=" + numeroSexo + "&discord=" + textousuarioDiscord + "&juego=" + id_juego + "");
+                            procesarPeticion(RegistroActivity.this, Peticion.INSERT_DATAUSER + "?user=" + textoUsuario + "&pass=" + textoClave + "&nombre=" + textoNombre + "&apellidos=" + textoApellidos + "&email=" + TextoEmail + "&edad=" + numeroEdad + "&sexo=" + numeroSexo + "&discord=" + textousuarioDiscord + "&juego=" + id_juego + "&avatar="+ avatar +"");
 
 
                         } catch (JSONException e) {

@@ -26,7 +26,9 @@
             android:layout_height="wrap_content"
             android:background="?attr/colorPrimary"
             android:minHeight="?attr/actionBarSize"
-            android:theme="?attr/actionBarTheme">
+            android:theme="@style/Mytoolbartheme">
+
+
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/imagenPerfil"

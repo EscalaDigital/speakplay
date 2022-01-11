@@ -1,23 +1,15 @@
 package com.gaemir.speakplay;
 
 
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.TypedValue;
 import android.view.Menu;
-
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -37,8 +29,23 @@ public class MainUser extends AppCompatActivity {
     ArrayList<String> source;
     ArrayList<Drawable> imagenesAmigos;
     RecyclerView.LayoutManager RecyclerViewLayoutManager;
-    Adapter adapter;
+    AdapterAmigos adapter;
     LinearLayoutManager HorizontalLayout;
+
+
+
+    //Elementos para el recyclerview vertical
+    RecyclerView recyclerViewVertical;
+    ArrayList<String> nombreVertical, juegosVecinos;
+    ArrayList<Drawable> imagenesVecinos;
+    RecyclerView.LayoutManager RecyclerViewLayoutManagerVertical;
+    AdapterVecinos adapterVecinos;
+    LinearLayoutManager verticalLayout;
+
+
+
+
+
     View ChildView;
     int RecyclerViewItemPosition;
 
@@ -60,6 +67,11 @@ public class MainUser extends AppCompatActivity {
         Drawable drawable2 = getResources().getDrawable(R.drawable.a1);
         logoPerfil.setImageDrawable(drawable2);
         toolbar.inflateMenu(R.menu.menu);
+
+
+
+
+
 
         this.logoPerfil.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,16 +103,20 @@ public class MainUser extends AppCompatActivity {
         });
 
 
-        //Reciclerview Horizontal
-        recyclerViewHorizontal = (RecyclerView) findViewById(R.id.recyclerview_horizontal);
-        RecyclerViewLayoutManager = new LinearLayoutManager(getApplicationContext());
-        recyclerViewHorizontal.setLayoutManager(RecyclerViewLayoutManager);
 
         // Añadir elementos al arraylist
         AddItemsToRecyclerViewArrayList();
 
+        //Reciclerview Horizontal//
+        //////////////////////////
+        recyclerViewHorizontal = (RecyclerView) findViewById(R.id.recyclerview_horizontal);
+        RecyclerViewLayoutManager = new LinearLayoutManager(getApplicationContext());
+        recyclerViewHorizontal.setLayoutManager(RecyclerViewLayoutManager);
+
+
+
         // añadir elementos al adaptador
-        adapter = new Adapter(source, imagenesAmigos);
+        adapter = new AdapterAmigos(source, imagenesAmigos);
 
         //cargar el layout de forma horizontal
 
@@ -109,6 +125,24 @@ public class MainUser extends AppCompatActivity {
 
         // añador elementos del adapter
         recyclerViewHorizontal.setAdapter(adapter);
+
+
+        //Reciclerview vertical//
+        //////////////////////////
+        recyclerViewVertical = (RecyclerView) findViewById(R.id.recyclerview_vertical);
+        RecyclerViewLayoutManagerVertical = new LinearLayoutManager(getApplicationContext());
+        recyclerViewVertical.setLayoutManager(RecyclerViewLayoutManagerVertical);
+
+        // añadir elementos al adaptador
+        adapterVecinos = new AdapterVecinos(nombreVertical, imagenesVecinos, juegosVecinos);
+
+        //cargar el layout de forma horizontal
+
+        verticalLayout = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL,false);
+        recyclerViewVertical.setLayoutManager(verticalLayout);
+
+        // añador elementos del adapter
+        recyclerViewVertical.setAdapter(adapterVecinos);
     }
 
     // Function to add items in RecyclerView.
@@ -131,6 +165,41 @@ public class MainUser extends AppCompatActivity {
         imagenesAmigos.add(getDrawable(R.drawable.a6));
         imagenesAmigos.add(getDrawable(R.drawable.a7));
         imagenesAmigos.add(getDrawable(R.drawable.a8));
+
+        nombreVertical = new ArrayList<>();
+        nombreVertical.add("RedFire");
+        nombreVertical.add("Starman");
+        nombreVertical.add("Gaemir");
+        nombreVertical.add("Holilad");
+        nombreVertical.add("Dangerman");
+        nombreVertical.add("Lolipower");
+        nombreVertical.add("Goku");
+
+        imagenesVecinos = new ArrayList<>();
+        imagenesVecinos.add(getDrawable(R.drawable.a2));
+        imagenesVecinos.add(getDrawable(R.drawable.a3));
+        imagenesVecinos.add(getDrawable(R.drawable.a4));
+        imagenesVecinos.add(getDrawable(R.drawable.a5));
+        imagenesVecinos.add(getDrawable(R.drawable.a6));
+        imagenesVecinos.add(getDrawable(R.drawable.a7));
+        imagenesVecinos.add(getDrawable(R.drawable.a8));
+
+        juegosVecinos = new ArrayList<>();
+        juegosVecinos.add("RedFire");
+        juegosVecinos.add("Starman");
+        juegosVecinos.add("Gaemir");
+        juegosVecinos.add("Holilad");
+        juegosVecinos.add("Dangerman");
+        juegosVecinos.add("Lolipower");
+        juegosVecinos.add("Goku");
+
+
+
+
+
+
+
+
     }
 
 
