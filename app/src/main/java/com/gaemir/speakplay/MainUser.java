@@ -1,6 +1,7 @@
 package com.gaemir.speakplay;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
@@ -15,8 +16,18 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -27,6 +38,11 @@ public class MainUser extends AppCompatActivity {
     private Toolbar toolbar;
     CircleImageView logoPerfil;
 
+    //variable usuario para usar durante la conexión
+    String usuario;
+    public String foto;
+
+
     //Elementos para el recyclerview horizontal
     RecyclerView recyclerViewHorizontal;
     ArrayList<String> source;
@@ -34,7 +50,6 @@ public class MainUser extends AppCompatActivity {
     RecyclerView.LayoutManager RecyclerViewLayoutManager;
     AdapterAmigos adapter;
     LinearLayoutManager HorizontalLayout;
-
 
 
     //Elementos para el recyclerview vertical
@@ -48,49 +63,56 @@ public class MainUser extends AppCompatActivity {
 
 
 
-
-    View ChildView;
-    int RecyclerViewItemPosition;
-
-    //Elementos para el recyclerview Vertical
-
-
-    //todo
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.principal_user);
+        //nombre usuario
+        usuario = getIntent().getExtras().getString("usuario");
 
-        toolbar = findViewById(R.id.toolbarPrincipal);
 
         //tomamos la imagen y la insertamos en la toolbar
 
         logoPerfil = findViewById(R.id.imagenPerfil);
-        Drawable drawable2 = getResources().getDrawable(R.drawable.a1);
-        logoPerfil.setImageDrawable(drawable2);
-        toolbar.inflateMenu(R.menu.menu);
+        toolbar = findViewById(R.id.toolbarPrincipal);
+        try {
+            obtenerFoto(this, Peticion.GET_FOTO + "?user=" + usuario);
+
+        } catch (JSONException e) {
+
+            Context context = logoPerfil.getContext();
+            int id = context.getResources().getIdentifier("a10", "drawable", context.getPackageName());
+            logoPerfil.setImageResource(id);
+            toolbar.inflateMenu(R.menu.menu);
+        }
 
 
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
 
-        Log.i("", "Opción 1: " + pref.getBoolean("check_box_hombres", false));
-        Log.i("", "Opción 2: " + pref.getInt("seek_bar_maximo", 0));
+        Log.i("", "Usuario: " + usuario);
 
-
-
-
-
+        Log.i("", "Juego: " + pref.getString("juegos_preferences", ""));
+        Log.i("", "Hombres: " + pref.getBoolean("check_box_hombres", true));
+        Log.i("", "Mujeres: " + pref.getBoolean("check_box_mujeres", true));
+        Log.i("", "Oculto: " + pref.getBoolean("check_box_oculto", true));
+        Log.i("", "Mínimo: " + pref.getInt("seek_bar_minimo", 18));
+        Log.i("", "Máximo: " + pref.getInt("seek_bar_maximo", 99));
+        Log.i("", "KM: " + pref.getInt("seek_bar_distancia", 10));
 
 
         this.logoPerfil.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MainUser.this, PerfilActivity.class));
+
+
+                Intent intent = new Intent(MainUser.this, PerfilActivity.class);
+
+                intent.putExtra("usuario", usuario);
+
+                startActivity(intent);
+
             }
         });
-
-
 
 
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
@@ -113,7 +135,6 @@ public class MainUser extends AppCompatActivity {
         });
 
 
-
         // Añadir elementos al arraylist
         AddItemsToRecyclerViewArrayList();
 
@@ -122,7 +143,6 @@ public class MainUser extends AppCompatActivity {
         recyclerViewHorizontal = (RecyclerView) findViewById(R.id.recyclerview_horizontal);
         RecyclerViewLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerViewHorizontal.setLayoutManager(RecyclerViewLayoutManager);
-
 
 
         // añadir elementos al adaptador
@@ -148,7 +168,7 @@ public class MainUser extends AppCompatActivity {
 
         //cargar el layout de forma horizontal
 
-        verticalLayout = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL,false);
+        verticalLayout = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerViewVertical.setLayoutManager(verticalLayout);
 
         // añador elementos del adapter
@@ -204,14 +224,83 @@ public class MainUser extends AppCompatActivity {
         juegosVecinos.add("Goku");
 
 
+    }
+
+    /**
+     * Realiza la peticion a la url aportada y devuelve un codigo de imagen
+     */
+    public void obtenerFoto(Context context, String url) throws JSONException {
+
+        String TAG = getClass().getName();
 
 
+        // Petición GET
+        VolleySingleton.getInstance(context).addToRequestQueue(
+
+                new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
 
 
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        // Procesar la respuesta Json
+                        procesarFoto(response);
+
+
+                    }
+                },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+
+                                Log.e(TAG, "Error Volley: " + error.getMessage());
+                            }
+                        }
+
+                )
+        );
 
 
     }
 
+    /**
+     * Interpreta los resultados de la respuesta
+     * realizar las operaciones correspondientes
+     *
+     * @param response Objeto Json con la respuesta
+     */
+    public void procesarFoto(JSONObject response) {
+        try {
+            // Obtener atributo "estado"
+            String estado = response.getString("estado");
+
+            String foto = "a10";
+            switch (estado) {
+                case "1": // EXITO
+                    // Obtener objeto "meta"
+                    JSONObject object = response.getJSONObject("info");
+
+                    foto = "a" + object.getString("foto");
+
+                    break;
+                case "2": // FALLIDO
+                    foto =  "a11";
+                    break;
+
+                case "3": // FALLIDO
+                    foto =  "a12";
+                    break;
+            }
+
+            Context context = logoPerfil.getContext();
+            int id = context.getResources().getIdentifier(foto, "drawable", context.getPackageName());
+            logoPerfil.setImageResource(id);
+            toolbar.inflateMenu(R.menu.menu);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
 
 
 }

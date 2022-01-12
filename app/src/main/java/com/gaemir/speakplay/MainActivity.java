@@ -160,8 +160,12 @@ public class MainActivity extends AppCompatActivity {
 
             switch (estado) {
                 case "1": // EXITO
+                    user = (EditText) findViewById(R.id.editTextTextPersonName);
+                    Intent intent = new Intent(MainActivity.this, MainUser.class);
 
-                    startActivity(new Intent(MainActivity.this, MainUser.class));
+                    intent.putExtra("usuario", user.getText().toString() );
+
+                    startActivity(intent);
 
                     break;
                 case "2": // FALLIDO

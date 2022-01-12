@@ -34,7 +34,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     public void onCreatePreferences(Bundle bundle, String s) {
         addPreferencesFromResource(R.xml.filtros);
 
-
+        //cargamos los juegos desde el servidos
        listPreferenceCategory  = (ListPreference) findPreference("juegos_preferences");
 
         try {
@@ -45,23 +45,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             System.err.println("Error al solicitar juegos");
         }
 
-        CharSequence entries[] = new String[4];
-        CharSequence entryValues[] = new String[4];
 
-        entries[0] = "hola";
-        entries[1] = "adios";
-        entries[2] = "qjase";
-        entries[3] = "Buenas noches";
-
-        entryValues[0] = Integer.toString(1);
-        entryValues[1] = Integer.toString(2);
-        entryValues[2] = Integer.toString(3);
-        entryValues[3] = Integer.toString(4);
-
-
-
-        listPreferenceCategory.setEntries(entries);
-        listPreferenceCategory.setEntryValues(entryValues);
     }
 
     /**
