@@ -5,6 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 
 import androidx.appcompat.widget.Toolbar;
@@ -75,7 +78,9 @@ public class MainUser extends AppCompatActivity {
 
         logoPerfil = findViewById(R.id.imagenPerfil);
         toolbar = findViewById(R.id.toolbarPrincipal);
+
         try {
+
             obtenerFoto(this, Peticion.GET_FOTO + "?user=" + usuario);
 
         } catch (JSONException e) {
@@ -85,6 +90,10 @@ public class MainUser extends AppCompatActivity {
             logoPerfil.setImageResource(id);
             toolbar.inflateMenu(R.menu.menu);
         }
+
+
+
+
 
 
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
@@ -278,9 +287,7 @@ public class MainUser extends AppCompatActivity {
                 case "1": // EXITO
                     // Obtener objeto "meta"
                     JSONObject object = response.getJSONObject("info");
-
                     foto = "a" + object.getString("foto");
-
                     break;
                 case "2": // FALLIDO
                     foto =  "a11";
@@ -300,6 +307,14 @@ public class MainUser extends AppCompatActivity {
             e.printStackTrace();
         }
 
+    }
+
+    private void updateUI(Location loc) {
+        if (loc != null) {
+
+        } else {
+
+        }
     }
 
 
