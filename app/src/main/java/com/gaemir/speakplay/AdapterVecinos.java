@@ -21,6 +21,10 @@ public class AdapterVecinos extends RecyclerView.Adapter<AdapterVecinos.MyView> 
     private List<Drawable> imagen;
     private List<String> juego;
 
+    public String getNombre(int i) {
+        return nombre.get(i);
+    }
+
     // View Holder class which
     // extends RecyclerView.ViewHolder
     public class MyView extends RecyclerView.ViewHolder {
@@ -83,11 +87,34 @@ public class AdapterVecinos extends RecyclerView.Adapter<AdapterVecinos.MyView> 
 
     }
 
-    // Override getItemCount which Returns
-    // the length of the RecyclerView.
+    // Vaciar el adapter
     @Override
     public int getItemCount()
     {
         return nombre.size();
+    }
+
+    public void clear() {
+        int size = nombre.size();
+        System.out.println(size);
+        System.out.println(nombre.get(4));
+        System.out.println(juego.get(4));
+        System.out.println(imagen.get(4));
+        if (size > 0) {
+            for (int i = 0; i < size; i++) {
+                System.out.println("vuelta"+ i );
+                try{
+                    nombre.remove(i);
+                    juego.remove(i);
+                    imagen.remove(i);
+                    notifyItemRemoved(i);
+                }catch (Exception e){
+                    System.out.println("Problema al intentar borrar un elemento");
+                }
+
+            }
+
+
+        }
     }
 }

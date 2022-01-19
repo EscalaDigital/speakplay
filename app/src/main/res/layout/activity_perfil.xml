@@ -42,7 +42,7 @@
 
                     android:background="@color/white"
                     android:scaleType="centerCrop"
-                    app:srcCompat="@drawable/person1" />
+                    app:srcCompat="@drawable/a1" />
 
             </androidx.cardview.widget.CardView>
 
@@ -57,19 +57,10 @@
                 android:textStyle="bold"
                 android:typeface="normal"
                 tools:layout_editor_absoluteX="102dp"
-                tools:layout_editor_absoluteY="79dp" />
+                tools:layout_editor_absoluteY="79dp"
+                android:focusable="false"/>
 
-            <EditText
-                android:id="@+id/clave"
-                android:layout_width="350dp"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:inputType="textPassword"
-                android:text="Clave"
-                android:textStyle="bold"
-                android:typeface="normal"
-                tools:layout_editor_absoluteX="102dp"
-                tools:layout_editor_absoluteY="79dp" />
+
 
 
             <EditText
@@ -82,7 +73,8 @@
                 android:textStyle="bold"
                 android:typeface="normal"
                 tools:layout_editor_absoluteX="102dp"
-                tools:layout_editor_absoluteY="79dp" />
+                tools:layout_editor_absoluteY="79dp"
+                android:focusable="false"/>
 
             <EditText
                 android:id="@+id/apellidos"
@@ -94,7 +86,8 @@
                 android:textStyle="bold"
                 android:typeface="normal"
                 tools:layout_editor_absoluteX="102dp"
-                tools:layout_editor_absoluteY="79dp" />
+                tools:layout_editor_absoluteY="79dp"
+                android:focusable="false"/>
 
             <EditText
                 android:id="@+id/email"
@@ -106,7 +99,8 @@
                 android:textStyle="bold"
                 android:typeface="normal"
                 tools:layout_editor_absoluteX="102dp"
-                tools:layout_editor_absoluteY="79dp" />
+                tools:layout_editor_absoluteY="79dp"
+                android:focusable="false"/>
 
             <EditText
                 android:id="@+id/edad"
@@ -115,7 +109,8 @@
                 android:ems="10"
                 android:inputType="numberSigned"
                 android:text="Edad"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:focusable="false"/>
 
             <EditText
                 android:id="@+id/sexo"
@@ -127,7 +122,8 @@
                 android:textStyle="bold"
                 android:typeface="normal"
                 tools:layout_editor_absoluteX="102dp"
-                tools:layout_editor_absoluteY="79dp" />
+                tools:layout_editor_absoluteY="79dp"
+                android:focusable="false"/>
 
             <EditText
                 android:id="@+id/usuarioDiscord"
@@ -139,12 +135,21 @@
                 android:textStyle="bold"
                 android:typeface="normal"
                 tools:layout_editor_absoluteX="102dp"
-                tools:layout_editor_absoluteY="79dp" />
+                tools:layout_editor_absoluteY="79dp"
+                android:focusable="false"/>
 
-            <Spinner
-                android:id="@+id/selectorJuegos"
+            <EditText
+                android:id="@+id/usuarioJuego"
                 android:layout_width="350dp"
-                android:layout_height="47dp" />
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textPersonName"
+                android:text="Juego"
+                android:textStyle="bold"
+                android:typeface="normal"
+                tools:layout_editor_absoluteX="102dp"
+                tools:layout_editor_absoluteY="79dp"
+                android:focusable="false"/>
 
 
         </LinearLayout>

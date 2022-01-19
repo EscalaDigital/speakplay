@@ -1,19 +1,15 @@
 package com.gaemir.speakplay;
 
-import android.annotation.TargetApi;
+
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.Toast;
 
 import androidx.preference.ListPreference;
-import androidx.preference.PreferenceFragment;
 import androidx.preference.PreferenceFragmentCompat;
-import androidx.preference.SeekBarPreference;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -28,6 +24,7 @@ import java.util.ArrayList;
 
 
 public class SettingsFragment extends PreferenceFragmentCompat {
+
 
     ListPreference listPreferenceCategory;
     @Override
@@ -46,7 +43,28 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         }
 
 
+
+
     }
+
+
+
+
+/**
+    @Override
+    public void onResume() {
+        super.onResume();
+        getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener((MainUser)getActivity());
+
+    }
+
+    @Override
+    public void onPause() {
+        getPreferenceManager().getSharedPreferences().unregisterOnSharedPreferenceChangeListener((MainUser)getActivity());
+        super.onPause();
+    }
+*/
+
 
     /**
      * Realiza la peticion de juegos al servidor
@@ -106,12 +124,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     CharSequence entryValues[] = new String[mensaje.length()];
 
 
-
-
-
-
-
-
                     for (int i = 0; i < mensaje.length(); i++) {
                         try {
                             JSONObject jsonObject = mensaje.getJSONObject(i);
@@ -147,5 +159,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         }
 
     }
+
+
+
 
 }

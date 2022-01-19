@@ -18,34 +18,37 @@
     <PreferenceCategory android:title="Jugadores">
 
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="check_box_hombres"
             android:title="Hombres" />
 
 
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="check_box_mujeres"
             android:title="Mujeres" />
 
 
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="check_box_oculto"
             android:title="Sexo oculto" />
 
         <SeekBarPreference
             android:key="seek_bar_minimo"
-            android:title="Mínimo"
+            android:title="Edad mínima"
             app:showSeekBarValue="true"
-            android:defaultValue="30"
+            android:defaultValue="18"
             android:max="99"
             android:min="18" />
 
         <SeekBarPreference
             android:key="seek_bar_maximo"
-            android:title="Máximo"
+            android:title="Edad máxima"
             app:showSeekBarValue="true"
+            android:defaultValue="99"
+            android:max="99"
+            android:min="18"
 
           />
 
@@ -56,8 +59,8 @@
             android:key="seek_bar_distancia"
             android:title="Kilómetros"
             app:showSeekBarValue="true"
-            android:defaultValue="30"
-            android:max="99"
+            android:defaultValue="1000"
+            android:max="1000"
             android:min="18" />
 
     </PreferenceCategory>
