@@ -21,6 +21,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Speakplay">
         <activity
+            android:name=".mapaAdminActivity"
+            android:exported="false" />
+        <activity
+            android:name=".perfilesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".estadisticasActivity"
+            android:exported="false" />
+        <activity
             android:name=".principalAdminActivity"
             android:exported="false" />
         <!--

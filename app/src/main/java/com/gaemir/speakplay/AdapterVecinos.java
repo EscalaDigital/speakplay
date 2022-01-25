@@ -22,12 +22,15 @@ public class AdapterVecinos extends RecyclerView.Adapter<AdapterVecinos.MyView> 
     private List<String> nombre;
     private List<Drawable> imagen;
     private List<String> juego;
+    private List<String> user;
 
     public String getNombre(int i) {
         return nombre.get(i);
     }
 
-
+    public String getUser(int i) {
+        return user.get(i);
+    }
 
     private View.OnClickListener listener;
 
@@ -56,8 +59,9 @@ public class AdapterVecinos extends RecyclerView.Adapter<AdapterVecinos.MyView> 
 
     // Constructor for adapter class
     // which takes a list of String type
-    public AdapterVecinos(List<String> horizontalList, List<Drawable> imagen, List<String> juego) {
+    public AdapterVecinos(List<String> horizontalList, List<Drawable> imagen, List<String> juego,List<String> user) {
 
+        this.user = user;
         this.nombre = horizontalList;
         this.imagen = imagen;
         this.juego = juego;

@@ -427,7 +427,7 @@ public class MainUser extends AppCompatActivity implements SharedPreferences.OnS
 
 
                             // añadir elementos al adaptador
-                            adapterVecinos = new AdapterVecinos(nombreVertical, imagenesVecinos, juegosVecinos);
+                            adapterVecinos = new AdapterVecinos(nombreVertical, imagenesVecinos, juegosVecinos, userVecinos);
 
 
                             vecino = new Vecino(nombreVertical, userVecinos, fotosVecinos, juegosVecinos, edadVecinos);

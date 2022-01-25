@@ -27,5 +27,7 @@ public class Peticion {
     public static final String GET_UBICATIONS = "https://escaladigital.net/speakandplay/obtener_ubicaciones.php";
     public static final String DENEGAR_AMISTAD = "https://escaladigital.net/speakandplay/rechazar_amistad.php";
     public static final String SOLICITAR_AMISTAD = "https://escaladigital.net/speakandplay/insert_amistad.php";
+    public static final String GET_TODOS = "https://escaladigital.net/speakandplay/obtener_todos.php";
+
 
 }
