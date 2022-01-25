@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
@@ -86,14 +88,24 @@ public class MainActivity extends AppCompatActivity {
                 user = (EditText) findViewById(R.id.editTextTextPersonName);
                 pass = (EditText) findViewById(R.id.editTextTextPersonName2);
 
+                ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
 
-                try {
-                    procesarPeticion(MainActivity.this, Peticion.LOGIN + "?user=" + user.getText() + "&pass=" + pass.getText() + "");
+                if (networkInfo != null && networkInfo.isConnected()) {
+                    try {
+                        procesarPeticion(MainActivity.this, Peticion.LOGIN + "?user=" + user.getText() + "&pass=" + pass.getText() + "");
 
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    String mensaje2 = "No dispone de conexión a internet. \nSpeak and Play necesita conexión a internet para funcionar. \nIntentelo de nuevo más tarde";
+                    Toast.makeText(MainActivity.this, mensaje2, Toast.LENGTH_LONG).show();
                 }
+
+
+
 
             }
 

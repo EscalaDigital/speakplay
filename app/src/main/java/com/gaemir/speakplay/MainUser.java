@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 
 import androidx.appcompat.widget.Toolbar;
@@ -103,93 +105,108 @@ public class MainUser extends AppCompatActivity implements SharedPreferences.OnS
         distancia = (pref.getInt("seek_bar_distancia", 50)) * 1000;
 
 
-        try {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
 
-            obtenerFoto(this, Peticion.GET_FOTO + "?user=" + usuario);
+        if (networkInfo != null && networkInfo.isConnected()) {
+            try {
 
-        } catch (JSONException e) {
-            //si no consigue la imagen desde el servidor le añadimos una común
-            Context context = logoPerfil.getContext();
-            int id = context.getResources().getIdentifier("a10", "drawable", context.getPackageName());
-            logoPerfil.setImageResource(id);
-            toolbar.inflateMenu(R.menu.menu);
-        }
+                obtenerFoto(this, Peticion.GET_FOTO + "?user=" + usuario);
 
-        this.logoPerfil.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-
-                Intent intent = new Intent(MainUser.this, PerfilActivity.class);
-
-                intent.putExtra("usuario", usuario);
-
-                intent.putExtra("perfil", "personal");
-
-                startActivity(intent);
-
+            } catch (JSONException e) {
+                //si no consigue la imagen desde el servidor le añadimos una común
+                Context context = logoPerfil.getContext();
+                int id = context.getResources().getIdentifier("a10", "drawable", context.getPackageName());
+                logoPerfil.setImageResource(id);
+                toolbar.inflateMenu(R.menu.menu);
             }
-        });
+
+            this.logoPerfil.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
 
 
-        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-
-                if (item.getItemId() == R.id.menufiltros) {
-                    startActivity(new Intent(MainUser.this, FiltrosActivity.class));
-                } else if (item.getItemId() == R.id.menumapa) {
-
-                    Intent intent = new Intent(MainUser.this, MapaActivity.class);
+                    Intent intent = new Intent(MainUser.this, PerfilActivity.class);
 
                     intent.putExtra("usuario", usuario);
 
-                    intent.putExtra("distancia", distancia);
-
-                    intent.putExtra("latitude", latitude);
-
-                    intent.putExtra("longitude", longitude);
+                    intent.putExtra("perfil", "personal");
 
                     startActivity(intent);
 
                 }
+            });
 
-                return false;
+
+            toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+
+                    if (item.getItemId() == R.id.menufiltros) {
+                        startActivity(new Intent(MainUser.this, FiltrosActivity.class));
+                    } else if (item.getItemId() == R.id.menumapa) {
+
+                        Intent intent = new Intent(MainUser.this, MapaActivity.class);
+
+                        intent.putExtra("usuario", usuario);
+
+                        intent.putExtra("distancia", distancia);
+
+                        intent.putExtra("latitude", latitude);
+
+                        intent.putExtra("longitude", longitude);
+
+                        startActivity(intent);
+
+                    }
+
+                    return false;
+                }
+            });
+
+
+            //Reciclerview Horizontal//
+            //////////////////////////
+            recyclerViewHorizontal = (RecyclerView) findViewById(R.id.recyclerview_horizontal);
+            RecyclerViewLayoutManager = new LinearLayoutManager(getApplicationContext());
+            recyclerViewHorizontal.setLayoutManager(RecyclerViewLayoutManager);
+            HorizontalLayout = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+            recyclerViewHorizontal.setLayoutManager(HorizontalLayout);
+
+            try {
+                obtenerAmigos(this, Peticion.GET_RELATIONS + "?user=" + usuario + "");
+
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-        });
 
 
-        //Reciclerview Horizontal//
-        //////////////////////////
-        recyclerViewHorizontal = (RecyclerView) findViewById(R.id.recyclerview_horizontal);
-        RecyclerViewLayoutManager = new LinearLayoutManager(getApplicationContext());
-        recyclerViewHorizontal.setLayoutManager(RecyclerViewLayoutManager);
-        HorizontalLayout = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        recyclerViewHorizontal.setLayoutManager(HorizontalLayout);
+            //Reciclerview vertical//
+            //////////////////////////
+            recyclerViewVertical = (RecyclerView) findViewById(R.id.recyclerview_vertical);
+            RecyclerViewLayoutManagerVertical = new LinearLayoutManager(getApplicationContext());
+            recyclerViewVertical.setLayoutManager(RecyclerViewLayoutManagerVertical);
 
-        try {
-            obtenerAmigos(this, Peticion.GET_RELATIONS + "?user=" + usuario + "");
+            verticalLayout = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+            recyclerViewVertical.setLayoutManager(verticalLayout);
 
-        } catch (JSONException e) {
-            e.printStackTrace();
+            try {
+                obtenerVecinos(this, Peticion.GET_UBICATIONS + "?user=" + usuario + "&distancia=" + distancia);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        } else {
+            String mensaje2 = "No dispone de conexión a internet. \nSpeak and Play necesita conexión a internet para funcionar. \nIntentelo de nuevo más tarde";
+            Toast.makeText(MainUser.this, mensaje2, Toast.LENGTH_LONG).show();
+
+            Intent intent = new Intent(MainUser.this, MainActivity.class);
+
+            startActivity(intent);
         }
 
 
-        //Reciclerview vertical//
-        //////////////////////////
-        recyclerViewVertical = (RecyclerView) findViewById(R.id.recyclerview_vertical);
-        RecyclerViewLayoutManagerVertical = new LinearLayoutManager(getApplicationContext());
-        recyclerViewVertical.setLayoutManager(RecyclerViewLayoutManagerVertical);
-
-        verticalLayout = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        recyclerViewVertical.setLayoutManager(verticalLayout);
-
-        try {
-            obtenerVecinos(this, Peticion.GET_UBICATIONS + "?user=" + usuario + "&distancia=" + distancia);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
 
 
     }

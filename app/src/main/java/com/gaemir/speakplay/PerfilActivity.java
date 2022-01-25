@@ -3,6 +3,9 @@ package com.gaemir.speakplay;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -43,11 +46,25 @@ public class PerfilActivity extends AppCompatActivity {
         usuarioDiscord = (EditText) findViewById(R.id.usuarioDiscord);
         juego = (EditText) findViewById(R.id.usuarioJuego);
 
-        try {
-            obtenerDatos(this, Peticion.GET_INFO + "?user=" + usuario);
-        } catch (JSONException e) {
-            e.printStackTrace();
+
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+
+        if (networkInfo != null && networkInfo.isConnected()) {
+            try {
+                obtenerDatos(this, Peticion.GET_INFO + "?user=" + usuario);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        } else {
+            String mensaje2 = "No dispone de conexión a internet. \nSpeak and Play necesita conexión a internet para funcionar. \nIntentelo de nuevo más tarde";
+            Toast.makeText(PerfilActivity.this, mensaje2, Toast.LENGTH_LONG).show();
+
+            Intent intent = new Intent(PerfilActivity.this, MainActivity.class);
+
+            startActivity(intent);
         }
+
     }
 
     /**

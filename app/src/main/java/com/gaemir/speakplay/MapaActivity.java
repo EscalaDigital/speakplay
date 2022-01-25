@@ -5,9 +5,12 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -51,12 +54,36 @@ public class MapaActivity extends AppCompatActivity implements OnMapReadyCallbac
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+
+        if (networkInfo == null && !(networkInfo.isConnected())) {
+
+            String mensaje2 = "No dispone de conexión a internet. \nSpeak and Play necesita conexión a internet para funcionar. \nIntentelo de nuevo más tarde";
+            Toast.makeText(MapaActivity.this, mensaje2, Toast.LENGTH_LONG).show();
+
+            Intent intent = new Intent(MapaActivity.this, MainActivity.class);
+
+            startActivity(intent);
+        }
+
 
     }
 
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        if (networkInfo == null && !(networkInfo.isConnected())) {
+
+            String mensaje2 = "No dispone de conexión a internet. \nSpeak and Play necesita conexión a internet para funcionar. \nIntentelo de nuevo más tarde";
+            Toast.makeText(MapaActivity.this, mensaje2, Toast.LENGTH_LONG).show();
+
+            Intent intent = new Intent(MapaActivity.this, MainActivity.class);
+
+            startActivity(intent);
+        }
 
         this.googleMap = googleMap;
         CameraPosition cameraPosition = CameraPosition.builder().target(new LatLng(latitude,longitude)).zoom(13).build();

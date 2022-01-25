@@ -24,6 +24,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -136,100 +138,110 @@ public class RegistroActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                if (usuario.getText().toString().matches("")
-                        || clave.getText().toString().matches("")
-                        || nombre.getText().toString().matches("")
-                        || apellidos.getText().toString().matches("")
-                        || email.getText().toString().matches("")
-                        || edad.getText().toString().matches("")
-                        || usuarioDiscord.getText().toString().matches("")
-                        || sexoGrupo.getCheckedRadioButtonId() == -1) {
+                ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
 
-                    String mensaje = "Por favor, rellene todos los campos";
-                    Toast.makeText(RegistroActivity.this, mensaje, Toast.LENGTH_LONG).show();
+                if (networkInfo != null && networkInfo.isConnected()) {
+                    if (usuario.getText().toString().matches("")
+                            || clave.getText().toString().matches("")
+                            || nombre.getText().toString().matches("")
+                            || apellidos.getText().toString().matches("")
+                            || email.getText().toString().matches("")
+                            || edad.getText().toString().matches("")
+                            || usuarioDiscord.getText().toString().matches("")
+                            || sexoGrupo.getCheckedRadioButtonId() == -1) {
 
-                } else {
-
-                    if (terminos.isChecked()) {
-
-                        if (latitud == null || longit == null) {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(RegistroActivity.this);
-                            builder.setTitle("Atención");
-                            builder.setMessage("No se ha podido obtener su ubicación. \nPor favor, compruebe que ha concedido los permisos necesarios.\nSi ha sido así, por favor intentelo más tarde, si no, acceda a los ajustes de su dispotivo");
-
-                            builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-
-                                    // method to get the location
-                                    getLastLocation();
-
-
-                                }
-                            });
-
-                            AlertDialog dialog = builder.create();
-                            dialog.show();
-                        } else {
-
-                            int numeroSexo = 2, numeroEdad, avatar;
-                            String textoUsuario, textoClave, textoNombre, textoApellidos, TextoEmail, textousuarioDiscord, textoJuego;
-
-                            textoUsuario = usuario.getText().toString();
-                            textoClave = clave.getText().toString();
-                            textoNombre = nombre.getText().toString();
-                            textoApellidos = apellidos.getText().toString();
-                            TextoEmail = email.getText().toString();
-                            numeroEdad = Integer.parseInt(edad.getText().toString());
-                            textousuarioDiscord = usuarioDiscord.getText().toString();
-                            textoJuego = spinner.getSelectedItem().toString();
-
-
-                            //arreglamos posibles espacios en blanco
-                            textoUsuario = textoUsuario.replaceAll(" ", "%20");
-                            textoClave = textoClave.replaceAll(" ", "%20");
-                            textoNombre = textoNombre.replaceAll(" ", "%20");
-                            textoApellidos = textoApellidos.replaceAll(" ", "%20");
-                            textousuarioDiscord = textousuarioDiscord.replaceAll(" ", "%20");
-
-
-                            int id_juego = controlJuego.get(textoJuego);
-
-                            int selectedId = sexoGrupo.getCheckedRadioButtonId();
-
-                            // find the radiobutton by returned id
-                            sexo = (RadioButton) findViewById(selectedId);
-
-                            if (sexo.getText().toString().matches("Hombre")) {
-                                numeroSexo = 0;
-                                avatar = (int) (Math.random() * 9 + 1);
-                            } else if (sexo.getText().toString().matches("Mujer")) {
-                                numeroSexo = 1;
-                                avatar = (int) (Math.random() * (14 - 10 + 1) + 10);
-                            } else {
-                                numeroSexo = 2;
-                                avatar = 10;
-                            }
-
-
-                            try {
-                                System.err.println("Juego elegido: " + id_juego);
-                                procesarPeticion(RegistroActivity.this, Peticion.INSERT_DATAUSER + "?user=" + textoUsuario + "&pass=" + textoClave + "&nombre=" + textoNombre + "&apellidos=" + textoApellidos + "&email=" + TextoEmail + "&edad=" + numeroEdad + "&sexo=" + numeroSexo + "&discord=" + textousuarioDiscord + "&juego=" + id_juego + "&avatar=" + avatar + "&latitud=" + latitud + "&longitud=" + longit + "");
-
-
-                            } catch (JSONException e) {
-                                String mensaje = "Ocurrió un error inesperado, por favor inténtelo más tarde";
-                                Toast.makeText(RegistroActivity.this, mensaje, Toast.LENGTH_LONG).show();
-                            }
-
-                        }
-                    } else {
-                        String mensaje = "Debe aceptar los terminos de uso";
+                        String mensaje = "Por favor, rellene todos los campos";
                         Toast.makeText(RegistroActivity.this, mensaje, Toast.LENGTH_LONG).show();
+
+                    } else {
+
+                        if (terminos.isChecked()) {
+
+                            if (latitud == null || longit == null) {
+                                AlertDialog.Builder builder = new AlertDialog.Builder(RegistroActivity.this);
+                                builder.setTitle("Atención");
+                                builder.setMessage("No se ha podido obtener su ubicación. \nPor favor, compruebe que ha concedido los permisos necesarios.\nSi ha sido así, por favor intentelo más tarde, si no, acceda a los ajustes de su dispotivo");
+
+                                builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                                        // method to get the location
+                                        getLastLocation();
+
+
+                                    }
+                                });
+
+                                AlertDialog dialog = builder.create();
+                                dialog.show();
+                            } else {
+
+                                int numeroSexo = 2, numeroEdad, avatar;
+                                String textoUsuario, textoClave, textoNombre, textoApellidos, TextoEmail, textousuarioDiscord, textoJuego;
+
+                                textoUsuario = usuario.getText().toString();
+                                textoClave = clave.getText().toString();
+                                textoNombre = nombre.getText().toString();
+                                textoApellidos = apellidos.getText().toString();
+                                TextoEmail = email.getText().toString();
+                                numeroEdad = Integer.parseInt(edad.getText().toString());
+                                textousuarioDiscord = usuarioDiscord.getText().toString();
+                                textoJuego = spinner.getSelectedItem().toString();
+
+
+                                //arreglamos posibles espacios en blanco
+                                textoUsuario = textoUsuario.replaceAll(" ", "%20");
+                                textoClave = textoClave.replaceAll(" ", "%20");
+                                textoNombre = textoNombre.replaceAll(" ", "%20");
+                                textoApellidos = textoApellidos.replaceAll(" ", "%20");
+                                textousuarioDiscord = textousuarioDiscord.replaceAll(" ", "%20");
+
+
+                                int id_juego = controlJuego.get(textoJuego);
+
+                                int selectedId = sexoGrupo.getCheckedRadioButtonId();
+
+                                // find the radiobutton by returned id
+                                sexo = (RadioButton) findViewById(selectedId);
+
+                                if (sexo.getText().toString().matches("Hombre")) {
+                                    numeroSexo = 0;
+                                    avatar = (int) (Math.random() * 9 + 1);
+                                } else if (sexo.getText().toString().matches("Mujer")) {
+                                    numeroSexo = 1;
+                                    avatar = (int) (Math.random() * (14 - 10 + 1) + 10);
+                                } else {
+                                    numeroSexo = 2;
+                                    avatar = 10;
+                                }
+
+
+                                try {
+                                    System.err.println("Juego elegido: " + id_juego);
+                                    procesarPeticion(RegistroActivity.this, Peticion.INSERT_DATAUSER + "?user=" + textoUsuario + "&pass=" + textoClave + "&nombre=" + textoNombre + "&apellidos=" + textoApellidos + "&email=" + TextoEmail + "&edad=" + numeroEdad + "&sexo=" + numeroSexo + "&discord=" + textousuarioDiscord + "&juego=" + id_juego + "&avatar=" + avatar + "&latitud=" + latitud + "&longitud=" + longit + "");
+
+
+                                } catch (JSONException e) {
+                                    String mensaje = "Ocurrió un error inesperado, por favor inténtelo más tarde";
+                                    Toast.makeText(RegistroActivity.this, mensaje, Toast.LENGTH_LONG).show();
+                                }
+
+                            }
+                        } else {
+                            String mensaje = "Debe aceptar los terminos de uso";
+                            Toast.makeText(RegistroActivity.this, mensaje, Toast.LENGTH_LONG).show();
+                        }
+
+
                     }
-
-
+                } else {
+                    String mensaje2 = "No dispone de conexión a internet. \nSpeak and Play necesita conexión a internet para funcionar. \nIntentelo de nuevo más tarde";
+                    Toast.makeText(RegistroActivity.this, mensaje2, Toast.LENGTH_LONG).show();
                 }
+
+
             }
 
         });

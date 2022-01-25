@@ -74,7 +74,7 @@ public class VecinoMain extends AppCompatActivity {
             nombreVecino = getIntent().getExtras().getString("nombre");
             userVecino = getIntent().getExtras().getString("userVecino");
 
-            nombreEdad.setText(usuario+", "+ edad);
+            nombreEdad.setText(nombreVecino+", "+ edad);
             juego.setText("¿Desea aceptar su solicitud de amistad?");
             juego.setTextSize(20);
             atras.setVisibility(View.INVISIBLE);
