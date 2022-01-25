@@ -32,7 +32,7 @@
     </androidx.cardview.widget.CardView>
 
     <TextView
-        android:id="@+id/textView5"
+        android:id="@+id/textNombreEdad"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
@@ -44,50 +44,51 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cardView" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:layout_width="385dp"
-        android:layout_height="89dp"
-        android:layout_marginTop="48dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView5" />
-
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/atras"
         android:layout_width="101dp"
         android:layout_height="62dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recyclerView"
+        app:layout_constraintTop_toBottomOf="@+id/textJuego"
         app:srcCompat="@drawable/flecha_izq" />
 
     <ImageView
-        android:id="@+id/imageView7"
+        android:id="@+id/imageDont"
         android:layout_width="102dp"
         android:layout_height="66dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imageView2"
-        app:layout_constraintTop_toBottomOf="@+id/recyclerView"
+        app:layout_constraintStart_toEndOf="@+id/atras"
+        app:layout_constraintTop_toBottomOf="@+id/textJuego"
         app:srcCompat="@drawable/equis" />
 
     <ImageView
-        android:id="@+id/imageView8"
+        android:id="@+id/imageCheck"
         android:layout_width="101dp"
         android:layout_height="62dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imageView7"
-        app:layout_constraintTop_toBottomOf="@+id/recyclerView"
+        app:layout_constraintStart_toEndOf="@+id/imageDont"
+        app:layout_constraintTop_toBottomOf="@+id/textJuego"
         app:srcCompat="@drawable/check" />
 
     <ImageView
-        android:id="@+id/imageView9"
+        android:id="@+id/adelante"
         android:layout_width="102dp"
         android:layout_height="60dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imageView8"
-        app:layout_constraintTop_toBottomOf="@+id/recyclerView"
+        app:layout_constraintStart_toEndOf="@+id/imageCheck"
+        app:layout_constraintTop_toBottomOf="@+id/textJuego"
         app:srcCompat="@drawable/flecha_drch" />
+
+    <TextView
+        android:id="@+id/textJuego"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:textSize="48sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textNombreEdad" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

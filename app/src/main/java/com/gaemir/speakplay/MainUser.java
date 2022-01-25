@@ -33,6 +33,11 @@ import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+
+import android.view.GestureDetector;
+import android.view.MotionEvent;
+
+
 public class MainUser extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private Toolbar toolbar;
@@ -40,6 +45,7 @@ public class MainUser extends AppCompatActivity implements SharedPreferences.OnS
 
     //variable usuario para usar durante la conexión
     String usuario, juegoUsuario;
+    double latitude, longitude;
 
     //variables obtenidas de los filtros
     int distancia, edadMinima, edadMaxima;
@@ -48,9 +54,14 @@ public class MainUser extends AppCompatActivity implements SharedPreferences.OnS
     SharedPreferences pref;
 
 
+    //recopilacion vecinos
+    Vecino vecino;
+
+
     //Elementos para el recyclerview horizontal
     RecyclerView recyclerViewHorizontal;
-    ArrayList<String> nombreAmigos;
+    ArrayList<String> nombreAmigos, userAmigos,nombreReal;
+    ArrayList<Integer> tipoAmistad, edadAmigo;
     ArrayList<Drawable> imagenesAmigos;
     RecyclerView.LayoutManager RecyclerViewLayoutManager;
     AdapterAmigos adapterAmigos;
@@ -59,8 +70,10 @@ public class MainUser extends AppCompatActivity implements SharedPreferences.OnS
 
     //Elementos para el recyclerview vertical
     RecyclerView recyclerViewVertical;
-    ArrayList<String> nombreVertical, juegosVecinos;
+    ArrayList<String> nombreVertical, juegosVecinos, userVecinos, fotosVecinos, edadVecinos;
+
     ArrayList<Drawable> imagenesVecinos;
+    ArrayList<Vecino> vecinos;
     RecyclerView.LayoutManager RecyclerViewLayoutManagerVertical;
     AdapterVecinos adapterVecinos;
     LinearLayoutManager verticalLayout;
@@ -111,6 +124,8 @@ public class MainUser extends AppCompatActivity implements SharedPreferences.OnS
 
                 intent.putExtra("usuario", usuario);
 
+                intent.putExtra("perfil", "personal");
+
                 startActivity(intent);
 
             }
@@ -125,7 +140,18 @@ public class MainUser extends AppCompatActivity implements SharedPreferences.OnS
                 if (item.getItemId() == R.id.menufiltros) {
                     startActivity(new Intent(MainUser.this, FiltrosActivity.class));
                 } else if (item.getItemId() == R.id.menumapa) {
-                    startActivity(new Intent(MainUser.this, MapaActivity.class));
+
+                    Intent intent = new Intent(MainUser.this, MapaActivity.class);
+
+                    intent.putExtra("usuario", usuario);
+
+                    intent.putExtra("distancia", distancia);
+
+                    intent.putExtra("latitude", latitude);
+
+                    intent.putExtra("longitude", longitude);
+
+                    startActivity(intent);
 
                 }
 
@@ -148,6 +174,7 @@ public class MainUser extends AppCompatActivity implements SharedPreferences.OnS
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
 
         //Reciclerview vertical//
         //////////////////////////
@@ -173,6 +200,12 @@ public class MainUser extends AppCompatActivity implements SharedPreferences.OnS
         //obtenenemos las actualizaciones de las preferencias
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
         pref.registerOnSharedPreferenceChangeListener(this);
+        try {
+            obtenerAmigos(this, Peticion.GET_RELATIONS + "?user=" + usuario + "");
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     //si se realiza un cambio en las preferencias (filtros) se refresca el reciclerview
@@ -239,6 +272,8 @@ public class MainUser extends AppCompatActivity implements SharedPreferences.OnS
                     JSONObject object = response.getJSONObject("info");
                     foto = "a" + object.getString("foto");
                     juegoUsuario = object.getString("ID_juego");
+                    latitude = Double.valueOf(object.getString("latitude"));
+                    longitude = Double.valueOf(object.getString("longitude"));
 
 
                     break;
@@ -329,9 +364,14 @@ public class MainUser extends AppCompatActivity implements SharedPreferences.OnS
 
                     JSONArray mensaje = response.getJSONArray("info");
 
+
                     nombreVertical = new ArrayList<>();
+                    userVecinos = new ArrayList<>();
                     juegosVecinos = new ArrayList<>();
                     imagenesVecinos = new ArrayList<>();
+                    vecinos = new ArrayList<>();
+                    edadVecinos = new ArrayList<>();
+                    fotosVecinos = new ArrayList<>();
 
 
                     for (int i = 0; i < mensaje.length(); i++) {
@@ -347,14 +387,23 @@ public class MainUser extends AppCompatActivity implements SharedPreferences.OnS
                             if (juegoSeleccionado.equals(juegoVecino)) {
                                 if ((hombreSelec && sexo == 0) || (mujerSelec && sexo == 1) || (sexoSelec && sexo == 2)) {
                                     if (edadMinima <= edad && edadMaxima >= edad) {
+
                                         String nombreVecino = jsonObject.getString("Nombre") + " " + jsonObject.getString("Apellidos");
                                         nombreVertical.add(nombreVecino);
+                                        String usuarioVecino = jsonObject.getString("Usuainf");
+                                        userVecinos.add(usuarioVecino);
                                         String fotoVecino = "a" + jsonObject.getString("foto");
+
+                                        fotosVecinos.add(fotoVecino);
                                         Context context = getBaseContext();
                                         int id = context.getResources().getIdentifier(fotoVecino, "drawable", context.getPackageName());
                                         imagenesVecinos.add(getDrawable(id));
                                         String juegoVecinoNombre = jsonObject.getString("Juego");
                                         juegosVecinos.add(juegoVecinoNombre);
+                                        System.out.println("edad " + edad);
+                                        edadVecinos.add(String.valueOf(edad));
+
+
                                     }
                                 }
                             }
@@ -363,6 +412,8 @@ public class MainUser extends AppCompatActivity implements SharedPreferences.OnS
                             // añadir elementos al adaptador
                             adapterVecinos = new AdapterVecinos(nombreVertical, imagenesVecinos, juegosVecinos);
 
+
+                            vecino = new Vecino(nombreVertical, userVecinos, fotosVecinos, juegosVecinos, edadVecinos);
                             //cargar el layout de forma horizontal
 
 
@@ -373,7 +424,29 @@ public class MainUser extends AppCompatActivity implements SharedPreferences.OnS
 
                     }
 
+                    adapterVecinos.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
 
+
+                            Intent intent = new Intent(MainUser.this, VecinoMain.class);
+
+
+                            intent.putExtra("usuario", usuario);
+                            intent.putExtra("seleccion", recyclerViewVertical.getChildAdapterPosition(view));
+                            intent.putExtra("vecinos", vecino);
+                            intent.putExtra("relacion", "busqueda");
+
+                            // Bundle b = new Bundle();
+                            //  b.putSerializable("vecinos", vecino);
+                            //   intent.putExtras(b);
+
+
+                            startActivity(intent);
+                            //
+
+                        }
+                    });
                     // añador elementos del adapter
                     recyclerViewVertical.setAdapter(adapterVecinos);
                     break;
@@ -443,7 +516,11 @@ public class MainUser extends AppCompatActivity implements SharedPreferences.OnS
                     JSONArray mensajeAmigos = response.getJSONArray("info");
 
                     nombreAmigos = new ArrayList<>();
+                    userAmigos = new ArrayList<>();
                     imagenesAmigos = new ArrayList<>();
+                    tipoAmistad = new ArrayList<>();
+                    nombreReal = new ArrayList<>();
+                    edadAmigo = new ArrayList<>();
 
 
                     for (int i = 0; i < mensajeAmigos.length(); i++) {
@@ -451,20 +528,30 @@ public class MainUser extends AppCompatActivity implements SharedPreferences.OnS
                         try {
                             JSONObject jsonObjectAmigos = mensajeAmigos.getJSONObject(i);
 
+                            int tipoAmigo = jsonObjectAmigos.getInt("tipo");
 
-                            String nombreAmigo = jsonObjectAmigos.getString("Nickdiscord");
+                            if (tipoAmigo <= 1) {
+                                tipoAmistad.add(tipoAmigo);
 
-                            nombreAmigos.add(nombreAmigo);
-                            String fotoAmigo = "a" + jsonObjectAmigos.getString("foto");
-                            Context context = getBaseContext();
-                            int id = context.getResources().getIdentifier(fotoAmigo, "drawable", context.getPackageName());
-                            imagenesAmigos.add(getDrawable(id));
+                                String nombreAmigo = jsonObjectAmigos.getString("Nickdiscord");
+                                nombreAmigos.add(nombreAmigo);
+                                String fotoAmigo = "a" + jsonObjectAmigos.getString("foto");
+                                String usuarioAmigo = jsonObjectAmigos.getString("Usuainf");
+                                userAmigos.add(usuarioAmigo);
+                                Context context = getBaseContext();
+                                int id = context.getResources().getIdentifier(fotoAmigo, "drawable", context.getPackageName());
+                                imagenesAmigos.add(getDrawable(id));
+                                String nombreAmigoReal = jsonObjectAmigos.getString("nombre");
+                                nombreReal.add(nombreAmigoReal);
+                                int edadAmigoObtenida = jsonObjectAmigos.getInt("edad");
+                                edadAmigo.add(edadAmigoObtenida);
 
 
-                            // añadir elementos al adaptador
-                            adapterAmigos = new AdapterAmigos(nombreAmigos, imagenesAmigos);
 
-                            //cargar el layout de forma horizontal
+
+                                // añadir elementos al adaptador
+                                adapterAmigos = new AdapterAmigos(nombreAmigos, userAmigos, imagenesAmigos, tipoAmistad, nombreReal, edadAmigo);
+                            }
 
 
                         } catch (JSONException e) {
@@ -473,7 +560,52 @@ public class MainUser extends AppCompatActivity implements SharedPreferences.OnS
 
 
                     }
+                    adapterAmigos.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
 
+                            String userSeleccinado = adapterAmigos.getUser(recyclerViewHorizontal.getChildAdapterPosition(view));
+
+                            int tipoSeleccinado = adapterAmigos.getTipo(recyclerViewHorizontal.getChildAdapterPosition(view));
+
+                            System.out.println(userSeleccinado);
+
+                            if(tipoSeleccinado == 1){
+
+                                Intent intent = new Intent(MainUser.this, PerfilActivity.class);
+
+                                intent.putExtra("usuario", userSeleccinado);
+
+                                intent.putExtra("perfil", "externo");
+
+                                startActivity(intent);
+
+                            }else if(tipoSeleccinado == 0){
+                                Intent intent = new Intent(MainUser.this, VecinoMain.class);
+
+                                String nombreSeleccionado = adapterAmigos.getNombre(recyclerViewHorizontal.getChildAdapterPosition(view));
+                                String userVecino = adapterAmigos.getUser(recyclerViewHorizontal.getChildAdapterPosition(view));
+                                int edadSeleccionado = adapterAmigos.getEdad(recyclerViewHorizontal.getChildAdapterPosition(view));
+
+                                intent.putExtra("usuario", usuario);
+                                intent.putExtra("nombre",nombreSeleccionado);
+                                intent.putExtra("edad", edadSeleccionado);
+                                intent.putExtra("userVecino", userVecino);
+
+                                intent.putExtra("relacion", "solicitud");
+
+
+                                startActivity(intent);
+                                //
+
+
+
+
+                            }
+
+
+                        }
+                    });
 
                     // añador elementos del adapter
                     recyclerViewHorizontal.setAdapter(adapterAmigos);

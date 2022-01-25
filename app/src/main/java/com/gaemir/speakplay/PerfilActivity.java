@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -21,7 +22,7 @@ import java.util.ArrayList;
 
 public class PerfilActivity extends AppCompatActivity {
 
-    String usuario;
+    String usuario, perfil;
 
     EditText user, nombre, apellidos, email, edad, sexo, usuarioDiscord, juego;
 
@@ -30,6 +31,8 @@ public class PerfilActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_perfil);
         usuario = getIntent().getExtras().getString("usuario");
+
+        perfil = getIntent().getExtras().getString("perfil");
 
         user = (EditText) findViewById(R.id.usuario);
         nombre = (EditText) findViewById(R.id.nombre);
@@ -41,7 +44,7 @@ public class PerfilActivity extends AppCompatActivity {
         juego = (EditText) findViewById(R.id.usuarioJuego);
 
         try {
-            obtenerDatos(this, Peticion.GET_INFO+"?user="+usuario);
+            obtenerDatos(this, Peticion.GET_INFO + "?user=" + usuario);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -106,18 +109,27 @@ public class PerfilActivity extends AppCompatActivity {
                             JSONObject jsonObject = mensaje.getJSONObject(i);
 
 
-                            user.setText("Usuario: "+ usuario);
+                                if (perfil.equals("personal")) {
+                                    user.setText("Usuario: " + usuario);
+                                    email.setText("Email: " + jsonObject.getString("Email"));
+                                } else if (perfil.equals("externo")) {
+                                    user.setVisibility(View.GONE);
+                                    email.setVisibility(View.GONE);
+                                }
+
+
+
                             nombre.setText("Nombre: " + jsonObject.getString("Nombre"));
                             apellidos.setText("Apellidos: " + jsonObject.getString("Apellidos"));
-                            email.setText("Email: " + jsonObject.getString("Email"));
+
                             edad.setText("Edad: " + jsonObject.getString("Edad"));
                             String sexonumero = jsonObject.getString("Sexo");
 
-                            if(sexonumero.equals("0")){
+                            if (sexonumero.equals("0")) {
                                 sexo.setText("Sexo masculino");
-                            }else if(sexonumero.equals("1")){
+                            } else if (sexonumero.equals("1")) {
                                 sexo.setText("Sexo femenino");
-                            }else if(sexonumero.equals("1")){
+                            } else if (sexonumero.equals("1")) {
                                 sexo.setText("Sexo oculto");
                             }
 
