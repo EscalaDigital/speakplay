@@ -105,8 +105,6 @@ public class MainActivity extends AppCompatActivity {
                 }
 
 
-
-
             }
 
         });
@@ -172,12 +170,28 @@ public class MainActivity extends AppCompatActivity {
 
             switch (estado) {
                 case "1": // EXITO
-                    user = (EditText) findViewById(R.id.editTextTextPersonName);
-                    Intent intent = new Intent(MainActivity.this, MainUser.class);
 
-                    intent.putExtra("usuario", user.getText().toString() );
 
-                    startActivity(intent);
+                    JSONObject object = response.getJSONObject("info");
+
+                    int tipo = object.getInt("Tipo");
+                    System.out.println(" tipo" + tipo);
+
+                    if (tipo == 1) {
+                        user = (EditText) findViewById(R.id.editTextTextPersonName);
+                        Intent intent = new Intent(MainActivity.this, MainUser.class);
+
+                        intent.putExtra("usuario", user.getText().toString());
+
+                        startActivity(intent);
+                    } else if (tipo == 0) {
+
+                        user = (EditText) findViewById(R.id.editTextTextPersonName);
+                        Intent intent = new Intent(MainActivity.this, principalAdminActivity.class);
+                        intent.putExtra("usuario", user.getText().toString());
+                        startActivity(intent);
+                    }
+
 
                     break;
                 case "2": // FALLIDO
