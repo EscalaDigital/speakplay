@@ -55,6 +55,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Activity de registro de usuarios
+ * Clase activity para el registro de usuarios (formulario que recopila los datos y los inserta en el servidor)
+ *
+ * @author Gabriel Orozco Frutos
+ * @version 0.1, 2022/29/01
+ */
+
 public class RegistroActivity extends AppCompatActivity {
 
     ImageView botonRegistro;
@@ -63,32 +71,36 @@ public class RegistroActivity extends AppCompatActivity {
     RadioButton sexo;
     CheckBox terminos;
 
+    //elementos para cargar la lista de juegos desde la BD
     Spinner spinner;
 
     Map<String, Integer> controlJuego = new HashMap<String, Integer>();
 
-    //Elementos para solicitar la ubicacion del usuario
 
+    //Elementos para solicitar la ubicacion del usuario
     FusedLocationProviderClient mFusedLocationClient;
     int PERMISSION_ID = 44;
 
-
     String latitud, longit;
 
-
+    /**
+     * Acciones a desarrollar al crear la Activity
+     *
+     * @param savedInstanceState Bundle (recursos Android) de la app
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registro);
 
-        //borrar localizacion
+
 
         latitud = null;
         longit = null;
 
 
+        //Elementos de la vista
         botonRegistro = (ImageView) findViewById(R.id.botonRegistro);
-
         usuario = (EditText) findViewById(R.id.usuario);
         clave = (EditText) findViewById(R.id.clave);
         nombre = (EditText) findViewById(R.id.nombre);
@@ -96,12 +108,8 @@ public class RegistroActivity extends AppCompatActivity {
         email = (EditText) findViewById(R.id.email);
         edad = (EditText) findViewById(R.id.edad);
         usuarioDiscord = (EditText) findViewById(R.id.usuarioDiscord);
-
-
         sexoGrupo = (RadioGroup) findViewById(R.id.grupoSexo);
         terminos = (CheckBox) findViewById(R.id.checkBox);
-
-
         spinner = (Spinner) findViewById(R.id.selectorJuegos);
 
         try {
@@ -113,17 +121,19 @@ public class RegistroActivity extends AppCompatActivity {
             System.err.println("Error al solicitar juegos");
         }
 
+        //Elemento cliente de localizacion, a partir de el obtenemos los parametros latitud - longitud
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Atención");
         builder.setMessage("Speak and Play basa su funcionamiento en la localización de los usuarios. \n\nEs por ello que deberá aceptar los permisos de ubicación cuando se le soliciten, o no podrá registrarse.\n\nDichos permisos solo se le solicitarán durante el resgistro y no durante el resto del uso de la app.\n\nDisculpe las molestias");
 
+        //Panel desde el que obtenemos permiso para obtener la ubicación del disposito
         builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
 
-                // method to get the location
+                // método para obtener la ubicación
                 getLastLocation();
 
 
@@ -249,20 +259,21 @@ public class RegistroActivity extends AppCompatActivity {
 
     /**
      * Métodos para obtener la ubicación del usuario
+     *
+     * Aclaración: El siguiente código se ha obtenido de la web
+     * https://www.geeksforgeeks.org/how-to-get-user-location-in-android/
+     * Con añadidos personales
      */
 
     @SuppressLint("MissingPermission")
     private void getLastLocation() {
-        // check if permissions are given
+        // Comprobar que se posee permisos para obtener la ubicacion
         if (checkPermissions()) {
 
-            // check if location is enabled
+            // comprobar si la ubicacion esta activada
             if (isLocationEnabled()) {
 
-                // getting last
-                // location from
-                // FusedLocationClient
-                // object
+                // obtener la última ubicación
                 mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
                     @Override
                     public void onComplete(@NonNull Task<Location> task) {
@@ -281,29 +292,31 @@ public class RegistroActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         } else {
-            // if permissions aren't available,
-            // request for permissions
+            // Si no tenemos permiso, se solicita
             requestPermissions();
         }
     }
 
+    /**
+     * Obtener los valores de localización
+     */
     @SuppressLint("MissingPermission")
     private void requestNewLocationData() {
 
-        // Initializing LocationRequest
-        // object with appropriate methods
         LocationRequest mLocationRequest = new LocationRequest();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         mLocationRequest.setInterval(5);
         mLocationRequest.setFastestInterval(0);
         mLocationRequest.setNumUpdates(1);
 
-        // setting LocationRequest
-        // on FusedLocationClient
+        // Los valores de vuelcan en una variable tipo FusedLocationProviderClient
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
     }
 
+    /**
+     * Obtiene valores y los pasa a variables latitud - longitud
+     */
     private LocationCallback mLocationCallback = new LocationCallback() {
 
         @Override
@@ -314,31 +327,36 @@ public class RegistroActivity extends AppCompatActivity {
         }
     };
 
-    // method to check for permissions
+    /**
+     * Método para comprobar si poseemos permiso para obtener la ubicación
+     * @return verdadero o falso con respecto a los permisos
+     */
     private boolean checkPermissions() {
         return ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
 
-        // If we want background location
-        // on Android 10.0 and higher,
-        // use:
-        // ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED
     }
 
-    // method to request for permissions
+    /**
+     * Método para solicitar permisos para obtener la ubicación
+     */
     private void requestPermissions() {
         ActivityCompat.requestPermissions(this, new String[]{
                 Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_ID);
     }
 
-    // method to check
-    // if location is enabled
+    // Si la localización está activada devuelve verdadero
     private boolean isLocationEnabled() {
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
     }
 
-    // If everything is alright then
+    /**
+     * Método que en caso de tener permisos devuelve la ultima localización
+     * @param requestCode
+     * @param permissions
+     * @param grantResults
+     */
     @Override
     public void
     onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -351,6 +369,9 @@ public class RegistroActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Comprobamos permisos y obtenemos localizacion si volvemos sobre la activity
+     */
     @Override
     public void onResume() {
         super.onResume();
@@ -362,13 +383,16 @@ public class RegistroActivity extends AppCompatActivity {
 
     /**
      * Realiza la peticion de juegos al servidor
+     * @param context contexto app
+     * @param url direccion del web service desde donde obtenemos los valores de la consulta
+     * @throws JSONException debemos atrapar un error en caso de que el JSON obtenido desde el servidor no sea correcto o no obtengamos un JSON
      */
     public void solicitarJuegos(Context context, String url) throws JSONException {
 
         String TAG = getClass().getName();
 
 
-        // Petición GET
+        //petición singleton mediante la libreria Volley
         VolleySingleton.getInstance(context).addToRequestQueue(
 
                 new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -376,7 +400,7 @@ public class RegistroActivity extends AppCompatActivity {
 
                     @Override
                     public void onResponse(JSONObject response) {
-                        // Procesar la respuesta Json
+                        // pasamos lo obtenido al procesador
 
                         insertarJuegos(response);
 
@@ -409,10 +433,11 @@ public class RegistroActivity extends AppCompatActivity {
 
             switch (estado) {
                 case "1": // EXITO
-
+                    //obtenemos el objeto juegos
                     JSONArray mensaje = response.getJSONArray("juegos");
                     ArrayList<String> strings = new ArrayList<>();
 
+                    //Obtenemos los valores y los cargamos sobre el spinner
                     for (int i = 0; i < mensaje.length(); i++) {
                         try {
                             JSONObject jsonObject = mensaje.getJSONObject(i);
@@ -455,14 +480,16 @@ public class RegistroActivity extends AppCompatActivity {
 
 
     /**
-     * Realiza la peticion a la url aportada y devuelve un objeto json
+     * Toma los valores del formulario, la ubicación y el juego del spinner y lo manda al servidor mediante url
+     * @param context contexto app
+     * @param url direccion del web service desde donde obtenemos los valores de la consulta
+     * @throws JSONException debemos atrapar un error en caso de que el JSON obtenido desde el servidor no sea correcto o no obtengamos un JSON
      */
     public void procesarPeticion(Context context, String url) throws JSONException {
 
         String TAG = getClass().getName();
 
-
-        // Petición GET
+        //petición singleton mediante la libreria Volley
         VolleySingleton.getInstance(context).addToRequestQueue(
 
                 new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -470,7 +497,7 @@ public class RegistroActivity extends AppCompatActivity {
 
                     @Override
                     public void onResponse(JSONObject response) {
-                        // Procesar la respuesta Json
+                        // pasamos lo obtenido al procesador
                         procesarRespuesta(response);
 
 

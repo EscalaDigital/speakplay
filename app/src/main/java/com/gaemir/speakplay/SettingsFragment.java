@@ -22,19 +22,35 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+/**
+ * Clase de filtros de búsqueda
+ * Clase que contiene un fragment con los filtros (preferences) de busqueda de usuarios vecinos.
+ *
+ * @author Gabriel Orozco Frutos
+ * @version 0.1, 2022/29/01
+ */
 
 public class SettingsFragment extends PreferenceFragmentCompat {
 
 
     ListPreference listPreferenceCategory;
+
+
+    /**
+     * Acciones a desarrollar al crear la Activity
+     *
+     * @param bundle Bundle (recursos Android) de la app
+     * @param s variable String (no usada en este código)
+     */
     @Override
     public void onCreatePreferences(Bundle bundle, String s) {
         addPreferencesFromResource(R.xml.filtros);
 
-        //cargamos los juegos desde el servidos
-       listPreferenceCategory  = (ListPreference) findPreference("juegos_preferences");
+
+        listPreferenceCategory = (ListPreference) findPreference("juegos_preferences");
 
         try {
+            //cargamos los juegos desde el servidos
             solicitarJuegos(getActivity(), Peticion.GET_JUEGOS);
 
         } catch (JSONException e) {
@@ -43,38 +59,21 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         }
 
 
-
-
     }
 
-
-
-
-/**
-    @Override
-    public void onResume() {
-        super.onResume();
-        getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener((MainUser)getActivity());
-
-    }
-
-    @Override
-    public void onPause() {
-        getPreferenceManager().getSharedPreferences().unregisterOnSharedPreferenceChangeListener((MainUser)getActivity());
-        super.onPause();
-    }
-*/
 
 
     /**
      * Realiza la peticion de juegos al servidor
+     * @param context contexto app
+     * @param url direccion del web service desde donde obtenemos los valores de la consulta
+     * @throws JSONException debemos atrapar un error en caso de que el JSON obtenido desde el servidor no sea correcto o no obtengamos un JSON
      */
     public void solicitarJuegos(Context context, String url) throws JSONException {
 
         String TAG = getClass().getName();
 
-
-        // Petición GET
+        //petición singleton mediante la libreria Volley
         VolleySingleton.getInstance(context).addToRequestQueue(
 
                 new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -82,7 +81,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
                     @Override
                     public void onResponse(JSONObject response) {
-                        // Procesar la respuesta Json
+                        // pasamos lo obtenido al procesador
 
                         insertarJuegos(response);
 
@@ -115,15 +114,17 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
             switch (estado) {
                 case "1": // EXITO
-
+                    //Carga elemetos de juegos
                     JSONArray mensaje = response.getJSONArray("juegos");
                     ArrayList<String> strings = new ArrayList<>();
 
 
+                    //Recipientes para los valores de juego (nombre y codigo)
                     CharSequence entries[] = new String[mensaje.length()];
                     CharSequence entryValues[] = new String[mensaje.length()];
 
 
+                    //Recorremos los valores y los vamos insertando
                     for (int i = 0; i < mensaje.length(); i++) {
                         try {
                             JSONObject jsonObject = mensaje.getJSONObject(i);
@@ -138,6 +139,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                         }
                     }
 
+                    //Pasamos los nombres de los juegos y sus códigos
                     listPreferenceCategory.setEntries(entries);
                     listPreferenceCategory.setEntryValues(entryValues);
 
@@ -159,8 +161,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         }
 
     }
-
-
 
 
 }

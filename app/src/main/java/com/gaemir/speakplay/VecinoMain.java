@@ -19,20 +19,33 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * Clase de navegación entre vecinos
+ * Esta clase permite navegar entre los diferentes vecinos obenidos en nuestra búsqueda, permite ademmas, realizar solicitudes de amistad o rechazo de las mismas
+ *
+ * @author Gabriel Orozco Frutos
+ * @version 0.1, 2022/29/01
+ */
+
 public class VecinoMain extends AppCompatActivity {
-    String usuario, relacion,nombreVecino, userVecino;
+    String usuario, relacion, nombreVecino, userVecino;
     int seleccion, edad;
     Vecino vecino;
 
     ImageView imagen, atras, adelante, check, dont;
     TextView nombreEdad, juego;
 
-
+    /**
+     * Acciones a desarrollar al crear la Activity
+     *
+     * @param savedInstanceState Bundle (recursos Android) de la app
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vecino_main);
 
+        //elementos de la vista
         imagen = (ImageView) findViewById(R.id.roundedImageView);
         nombreEdad = (TextView) findViewById(R.id.textNombreEdad);
         juego = (TextView) findViewById(R.id.textJuego);
@@ -40,18 +53,21 @@ public class VecinoMain extends AppCompatActivity {
         adelante = (ImageView) findViewById(R.id.adelante);
         check = (ImageView) findViewById(R.id.imageCheck);
         dont = (ImageView) findViewById(R.id.imageDont);
-
-        relacion =  getIntent().getExtras().getString("relacion");
+        //atrapamos los valores obtenidos del activity anterior
+        relacion = getIntent().getExtras().getString("relacion");
         usuario = getIntent().getExtras().getString("usuario");
 
+        //Diferenciamos entre vecinos obtenidos de la busqueda o vecinos que nos han solicitado amistad
 
-        if(relacion.equals("busqueda")){
-
+        //Si el vecino de nuestra busqueda
+        if (relacion.equals("busqueda")) {
+            //atrapamos los valores obtenidos del activity anterior
             vecino = getIntent().getParcelableExtra("vecinos");
             seleccion = getIntent().getExtras().getInt("seleccion");
             insertarVecino();
             userVecino = vecino.getUser(seleccion);
 
+            //boton de navegacion
             this.atras.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -60,7 +76,7 @@ public class VecinoMain extends AppCompatActivity {
 
                 }
             });
-
+            //boton de navegacion
             this.adelante.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -69,12 +85,15 @@ public class VecinoMain extends AppCompatActivity {
 
                 }
             });
-        }else if(relacion.equals("solicitud")){
+
+            //Si el vecino nos ha enviado solicitud de amistad
+        } else if (relacion.equals("solicitud")) {
+            //atrapamos los valores obtenidos del activity anterior
             edad = getIntent().getExtras().getInt("edad");
             nombreVecino = getIntent().getExtras().getString("nombre");
             userVecino = getIntent().getExtras().getString("userVecino");
 
-            nombreEdad.setText(nombreVecino+", "+ edad);
+            nombreEdad.setText(nombreVecino + ", " + edad);
             juego.setText("¿Desea aceptar su solicitud de amistad?");
             juego.setTextSize(20);
             atras.setVisibility(View.INVISIBLE);
@@ -82,15 +101,13 @@ public class VecinoMain extends AppCompatActivity {
         }
 
 
-
-
+        //Enviar solicitud de amistad o confirmar una solicitud externa
         this.check.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 try {
-
-                    solicitarAmistad(VecinoMain.this, Peticion.SOLICITAR_AMISTAD+"?user="+usuario+"&vecino="+userVecino);
+                    solicitarAmistad(VecinoMain.this, Peticion.SOLICITAR_AMISTAD + "?user=" + usuario + "&vecino=" + userVecino);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -98,12 +115,13 @@ public class VecinoMain extends AppCompatActivity {
             }
         });
 
+        //Denegar una solicitud de amistad o bloquear a un usuario del que no nos interesa recibir solicitud de amistad
         this.dont.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 try {
-                    denegarAmistad(VecinoMain.this, Peticion.DENEGAR_AMISTAD+"?user="+usuario+"&vecino="+userVecino);
+                    denegarAmistad(VecinoMain.this, Peticion.DENEGAR_AMISTAD + "?user=" + usuario + "&vecino=" + userVecino);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -112,12 +130,11 @@ public class VecinoMain extends AppCompatActivity {
         });
 
 
-
-
     }
 
-
-
+    /**
+     * Pasa los valores obtenidos a la vista
+     */
     private void insertarVecino() {
 
 
@@ -133,40 +150,39 @@ public class VecinoMain extends AppCompatActivity {
 
         if (seleccion == 0) {
             atras.setVisibility(View.INVISIBLE);
-        }else{
+        } else {
             atras.setVisibility(View.VISIBLE);
         }
 
         System.out.println(vecino.getSize());
         if (vecino.getSize() - 1 == seleccion) {
             adelante.setVisibility(View.INVISIBLE);
-        }else{
+        } else {
             adelante.setVisibility(View.VISIBLE);
         }
 
     }
 
 
-
     /**
      * Realiza una peticion de amistad, comprueba la situacion en la BD y actua en consecuencia
+     * @param context contexto app
+     * @param url direccion del web service desde donde obtenemos los valores de la consulta
+     * @throws JSONException debemos atrapar un error en caso de que el JSON obtenido desde el servidor no sea correcto o no obtengamos un JSON
      */
     public void solicitarAmistad(Context context, String url) throws JSONException {
 
         String TAG = getClass().getName();
 
-
-        // Petición GET
+        //petición singleton mediante la libreria Volley
         VolleySingleton.getInstance(context).addToRequestQueue(
 
                 new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
 
-
                     @Override
                     public void onResponse(JSONObject response) {
-                        // Procesar la respuesta Json
+                        // pasamos lo obtenido al procesador
                         procesarSolicitud(response);
-
 
                     }
                 },
@@ -185,7 +201,8 @@ public class VecinoMain extends AppCompatActivity {
     }
 
     /**
-     * Gestionar respuesta desde servidor
+     * Interpreta los resultados de la respuesta y así
+     * realizar las operaciones correspondientes
      *
      * @param response Objeto Json con la respuesta
      */
@@ -196,7 +213,7 @@ public class VecinoMain extends AppCompatActivity {
 
             switch (estado) {
                 case "1": // EXITO
-                    // Obtener objeto "meta"
+                    // Obtener objeto "mensaje"
 
                     String mensaje = response.getString("mensaje");
                     Toast.makeText(this, mensaje, Toast.LENGTH_LONG).show();
@@ -211,7 +228,6 @@ public class VecinoMain extends AppCompatActivity {
             }
 
 
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -221,6 +237,9 @@ public class VecinoMain extends AppCompatActivity {
 
     /**
      * Realiza una peticion de amistad, comprueba la situacion en la BD y actua en consecuencia
+     * @param context contexto app
+     * @param url direccion del web service desde donde obtenemos los valores de la consulta
+     * @throws JSONException debemos atrapar un error en caso de que el JSON obtenido desde el servidor no sea correcto o no obtengamos un JSON
      */
     public void denegarAmistad(Context context, String url) throws JSONException {
 
@@ -256,7 +275,8 @@ public class VecinoMain extends AppCompatActivity {
     }
 
     /**
-     * Gestionar respuesta desde servidor
+     * Interpreta los resultados de la respuesta y así
+     * realizar las operaciones correspondientes
      *
      * @param response Objeto Json con la respuesta
      */
@@ -267,7 +287,7 @@ public class VecinoMain extends AppCompatActivity {
 
             switch (estado) {
                 case "1": // EXITO
-                    // Obtener objeto "meta"
+                    // Obtener objeto "mensaje"
 
                     String mensaje = response.getString("mensaje");
                     Toast.makeText(this, mensaje, Toast.LENGTH_LONG).show();

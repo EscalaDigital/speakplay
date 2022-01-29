@@ -23,20 +23,35 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+/**
+ * Activity de acceso a los datos de usuario
+ * Realiza una consulta a la BD con el usuario aportado (Usuario de la app o vecino consultado)
+ *
+ * @author Gabriel Orozco Frutos
+ * @version 0.1, 2022/29/01
+ */
+
 public class PerfilActivity extends AppCompatActivity {
 
     String usuario, perfil;
 
     EditText user, nombre, apellidos, email, edad, sexo, usuarioDiscord, juego;
 
+    /**
+     * Acciones a desarrollar al crear la Activity
+     *
+     * @param savedInstanceState Bundle (recursos Android) de la app
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_perfil);
-        usuario = getIntent().getExtras().getString("usuario");
 
+        //atrapamos los valores obtenidos del activity anterior
+        usuario = getIntent().getExtras().getString("usuario");
         perfil = getIntent().getExtras().getString("perfil");
 
+        //Elementos del layout
         user = (EditText) findViewById(R.id.usuario);
         nombre = (EditText) findViewById(R.id.nombre);
         apellidos = (EditText) findViewById(R.id.apellidos);
@@ -46,10 +61,10 @@ public class PerfilActivity extends AppCompatActivity {
         usuarioDiscord = (EditText) findViewById(R.id.usuarioDiscord);
         juego = (EditText) findViewById(R.id.usuarioJuego);
 
-
+        //elementos necesarios para comprobar que existe conexión a internet
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-
+        //Comprobamos que existe conexion
         if (networkInfo != null && networkInfo.isConnected()) {
             try {
                 obtenerDatos(this, Peticion.GET_INFO + "?user=" + usuario);
@@ -68,14 +83,15 @@ public class PerfilActivity extends AppCompatActivity {
     }
 
     /**
-     * Realiza la peticion a la url aportada y devuelve todos los usuarios dentro de la distancia establecida
+     * Realiza la peticion a la url aportada y devuelve todos los valores del usuario
+     * @param context contexto app
+     * @param url direccion del web service desde donde obtenemos los valores de la consulta
+     * @throws JSONException debemos atrapar un error en caso de que el JSON obtenido desde el servidor no sea correcto o no obtengamos un JSON
      */
     public void obtenerDatos(Context context, String url) throws JSONException {
 
         String TAG = getClass().getName();
-
-
-        // Petición GET
+        //petición singleton mediante la libreria Volley
         VolleySingleton.getInstance(context).addToRequestQueue(
 
                 new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -83,7 +99,7 @@ public class PerfilActivity extends AppCompatActivity {
 
                     @Override
                     public void onResponse(JSONObject response) {
-                        // Procesar la respuesta Json
+                        // pasamos lo obtenido al procesador
                         procesarDatos(response);
 
 
@@ -117,23 +133,22 @@ public class PerfilActivity extends AppCompatActivity {
 
             switch (estado) {
                 case "1": // EXITO
-
+                    //obtenemos el objeto info
                     JSONArray mensaje = response.getJSONArray("info");
 
-
+                    //Cargamos los valores del usuario y los mostramos en el formulario
                     for (int i = 0; i < mensaje.length(); i++) {
                         try {
                             JSONObject jsonObject = mensaje.getJSONObject(i);
 
 
-                                if (perfil.equals("personal")) {
-                                    user.setText("Usuario: " + usuario);
-                                    email.setText("Email: " + jsonObject.getString("Email"));
-                                } else if (perfil.equals("externo")) {
-                                    user.setVisibility(View.GONE);
-                                    email.setVisibility(View.GONE);
-                                }
-
+                            if (perfil.equals("personal")) {
+                                user.setText("Usuario: " + usuario);
+                                email.setText("Email: " + jsonObject.getString("Email"));
+                            } else if (perfil.equals("externo")) {
+                                user.setVisibility(View.GONE);
+                                email.setVisibility(View.GONE);
+                            }
 
 
                             nombre.setText("Nombre: " + jsonObject.getString("Nombre"));

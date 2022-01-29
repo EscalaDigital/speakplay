@@ -39,7 +39,13 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 
-
+/**
+ * Activity principal de acceso de usuarios.
+ * Pantalla principal tras el login. En ella se muestran las personas cercanas al usuario (segun sus parametros de búsqueda), las persoans con las que conecta. El acceso al prefil, a los filtros de búsqueda y al mapa
+ *
+ * @author Gabriel Orozco Frutos
+ * @version 0.1, 2022/29/01
+ */
 public class MainUser extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private Toolbar toolbar;
@@ -62,7 +68,7 @@ public class MainUser extends AppCompatActivity implements SharedPreferences.OnS
 
     //Elementos para el recyclerview horizontal
     RecyclerView recyclerViewHorizontal;
-    ArrayList<String> nombreAmigos, userAmigos,nombreReal;
+    ArrayList<String> nombreAmigos, userAmigos, nombreReal;
     ArrayList<Integer> tipoAmistad, edadAmigo;
     ArrayList<Drawable> imagenesAmigos;
     RecyclerView.LayoutManager RecyclerViewLayoutManager;
@@ -80,7 +86,11 @@ public class MainUser extends AppCompatActivity implements SharedPreferences.OnS
     AdapterVecinos adapterVecinos;
     LinearLayoutManager verticalLayout;
 
-
+    /**
+     * Acciones a desarrollar al crear la Activity
+     *
+     * @param savedInstanceState Bundle (recursos Android) de la app
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,15 +98,13 @@ public class MainUser extends AppCompatActivity implements SharedPreferences.OnS
         //nombre usuario
         usuario = getIntent().getExtras().getString("usuario");
 
-
         //tomamos la imagen y la insertamos en la toolbar
-
         logoPerfil = findViewById(R.id.imagenPerfil);
         toolbar = findViewById(R.id.toolbarPrincipal);
         pref = PreferenceManager.getDefaultSharedPreferences(this);
         PreferenceManager.setDefaultValues(this, R.xml.filtros, true);
 
-
+        //Obtenemos las preferences del usuario
         hombreSelec = pref.getBoolean("check_box_hombres", true);
         mujerSelec = pref.getBoolean("check_box_mujeres", true);
         sexoSelec = pref.getBoolean("check_box_oculto", true);
@@ -104,10 +112,10 @@ public class MainUser extends AppCompatActivity implements SharedPreferences.OnS
         edadMaxima = pref.getInt("seek_bar_maximo", 99);
         distancia = (pref.getInt("seek_bar_distancia", 50)) * 1000;
 
-
+        //elementos necesarios para comprobar la conexión a internet
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-
+        //comprobamos conexión
         if (networkInfo != null && networkInfo.isConnected()) {
             try {
 
@@ -121,10 +129,10 @@ public class MainUser extends AppCompatActivity implements SharedPreferences.OnS
                 toolbar.inflateMenu(R.menu.menu);
             }
 
+            //Al pulsar la foto de perfil (arriba a la izquierda) se abre la pantalla perfil de usuario
             this.logoPerfil.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
 
                     Intent intent = new Intent(MainUser.this, PerfilActivity.class);
 
@@ -137,14 +145,16 @@ public class MainUser extends AppCompatActivity implements SharedPreferences.OnS
                 }
             });
 
-
+            //Acceso al menu desplegable
             toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
 
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
-
+                    //acceso a los filtros
                     if (item.getItemId() == R.id.menufiltros) {
                         startActivity(new Intent(MainUser.this, FiltrosActivity.class));
+
+                        //acceso al mapa
                     } else if (item.getItemId() == R.id.menumapa) {
 
                         Intent intent = new Intent(MainUser.this, MapaActivity.class);
@@ -207,10 +217,11 @@ public class MainUser extends AppCompatActivity implements SharedPreferences.OnS
         }
 
 
-
-
     }
 
+    /**
+     * En onResume obtenenemos las actualizaciones de las preferencias y si existen cambios se realizan sobre vecinos y actualizamos amigos
+     */
     @Override
     public void onResume() {
         super.onResume();
@@ -225,7 +236,10 @@ public class MainUser extends AppCompatActivity implements SharedPreferences.OnS
         }
     }
 
-    //si se realiza un cambio en las preferencias (filtros) se refresca el reciclerview
+    /**
+     * si se realiza un cambio en las preferencias (filtros) se refresca el reciclerview
+     */
+
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 
@@ -237,13 +251,14 @@ public class MainUser extends AppCompatActivity implements SharedPreferences.OnS
 
     /**
      * Realiza la peticion a la url aportada y devuelve un codigo de imagen que se inserta arriba a la izquierda
+     * @param context contexto app
+     * @param url direccion del web service desde donde obtenemos los valores de la consulta
+     * @throws JSONException debemos atrapar un error en caso de que el JSON obtenido desde el servidor no sea correcto o no obtengamos un JSON
      */
     public void obtenerFoto(Context context, String url) throws JSONException {
 
         String TAG = getClass().getName();
-
-
-        // Petición GET
+        //petición singleton mediante la libreria Volley
         VolleySingleton.getInstance(context).addToRequestQueue(
 
                 new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -251,7 +266,7 @@ public class MainUser extends AppCompatActivity implements SharedPreferences.OnS
 
                     @Override
                     public void onResponse(JSONObject response) {
-                        // Procesar la respuesta Json
+                        // pasamos lo obtenido al procesador
                         procesarFoto(response);
 
 
@@ -285,9 +300,10 @@ public class MainUser extends AppCompatActivity implements SharedPreferences.OnS
             String foto = "a10";
             switch (estado) {
                 case "1": // EXITO
-                    // Obtener objeto "meta"
+                   //obtenemos el objeto info
                     JSONObject object = response.getJSONObject("info");
                     foto = "a" + object.getString("foto");
+                    //obtenemos valores del usuario de la app
                     juegoUsuario = object.getString("ID_juego");
                     latitude = Double.valueOf(object.getString("latitude"));
                     longitude = Double.valueOf(object.getString("longitude"));
@@ -307,7 +323,7 @@ public class MainUser extends AppCompatActivity implements SharedPreferences.OnS
 
             juegoSeleccionado = pref.getString("juegos_preferences", juegoUsuario);
 
-
+            //Pasamos foto a perfil
             Context context = logoPerfil.getContext();
             int id = context.getResources().getIdentifier(foto, "drawable", context.getPackageName());
             logoPerfil.setImageResource(id);
@@ -319,26 +335,19 @@ public class MainUser extends AppCompatActivity implements SharedPreferences.OnS
 
     }
 
-    private void updateUI(Location loc) {
-        if (loc != null) {
-
-        } else {
-
-        }
-    }
-
 
     /**
      * Realiza la peticion a la url aportada y devuelve todos los usuarios dentro de la distancia establecida
+     * @param context contexto app
+     * @param url direccion del web service desde donde obtenemos los valores de la consulta
+     * @throws JSONException debemos atrapar un error en caso de que el JSON obtenido desde el servidor no sea correcto o no obtengamos un JSON
      */
     public void obtenerVecinos(Context context, String url) throws JSONException {
 
         String TAG = getClass().getName();
-
-
-        // Petición GET
+        //petición singleton mediante la libreria Volley
         VolleySingleton.getInstance(context).addToRequestQueue(
-
+                //obtenemos la respuesta
                 new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
 
 
@@ -366,7 +375,7 @@ public class MainUser extends AppCompatActivity implements SharedPreferences.OnS
 
 
     /**
-     * Interpreta los resultados de la respuesta y así
+     * Interpreta los resultados de la respuesta
      * realizar las operaciones correspondientes
      *
      * @param response Objeto Json con la respuesta
@@ -378,10 +387,10 @@ public class MainUser extends AppCompatActivity implements SharedPreferences.OnS
 
             switch (estado) {
                 case "1": // EXITO
-
+                    //obtenemso valores de info
                     JSONArray mensaje = response.getJSONArray("info");
 
-
+                    //Listas de valores para pasar al Adapter de vecinos (AdapterVecinos)
                     nombreVertical = new ArrayList<>();
                     userVecinos = new ArrayList<>();
                     juegosVecinos = new ArrayList<>();
@@ -395,7 +404,7 @@ public class MainUser extends AppCompatActivity implements SharedPreferences.OnS
                         try {
                             JSONObject jsonObject = mensaje.getJSONObject(i);
 
-
+                            //obtenemos valores del array
                             int edad = Integer.valueOf(jsonObject.getString("Edad"));
                             int sexo = Integer.valueOf(jsonObject.getString("Sexo"));
                             String juegoVecino = jsonObject.getString("ID_juego");
@@ -429,9 +438,7 @@ public class MainUser extends AppCompatActivity implements SharedPreferences.OnS
                             // añadir elementos al adaptador
                             adapterVecinos = new AdapterVecinos(nombreVertical, imagenesVecinos, juegosVecinos, userVecinos);
 
-
                             vecino = new Vecino(nombreVertical, userVecinos, fotosVecinos, juegosVecinos, edadVecinos);
-                            //cargar el layout de forma horizontal
 
 
                         } catch (JSONException e) {
@@ -440,23 +447,17 @@ public class MainUser extends AppCompatActivity implements SharedPreferences.OnS
 
 
                     }
-
+                    //Accion para cuando se pulsa sobre un elemento del reciclerview
                     adapterVecinos.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
 
-
                             Intent intent = new Intent(MainUser.this, VecinoMain.class);
-
 
                             intent.putExtra("usuario", usuario);
                             intent.putExtra("seleccion", recyclerViewVertical.getChildAdapterPosition(view));
                             intent.putExtra("vecinos", vecino);
                             intent.putExtra("relacion", "busqueda");
-
-                            // Bundle b = new Bundle();
-                            //  b.putSerializable("vecinos", vecino);
-                            //   intent.putExtras(b);
 
 
                             startActivity(intent);
@@ -481,21 +482,22 @@ public class MainUser extends AppCompatActivity implements SharedPreferences.OnS
 
     /**
      * Realiza la peticion a la url aportada y devuelve todos los usuarios con una relacion establecida
+     * @param context contexto app
+     * @param url direccion del web service desde donde obtenemos los valores de la consulta
+     * @throws JSONException debemos atrapar un error en caso de que el JSON obtenido desde el servidor no sea correcto o no obtengamos un JSON
      */
     public void obtenerAmigos(Context context, String url) throws JSONException {
 
         String TAG = getClass().getName();
-
-
-        // Petición GET
+        //petición singleton mediante la libreria Volley
         VolleySingleton.getInstance(context).addToRequestQueue(
-
+                //obtenemos la respuesta
                 new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
 
 
                     @Override
                     public void onResponse(JSONObject response) {
-                        // Procesar la respuesta Json
+                        // pasamos lo obtenido al  procesador
                         procesarAmigos(response);
 
 
@@ -530,6 +532,7 @@ public class MainUser extends AppCompatActivity implements SharedPreferences.OnS
             switch (estadoAmigos) {
                 case "1": // EXITO
 
+                    //obtenemos valores de info
                     JSONArray mensajeAmigos = response.getJSONArray("info");
 
                     nombreAmigos = new ArrayList<>();
@@ -539,7 +542,7 @@ public class MainUser extends AppCompatActivity implements SharedPreferences.OnS
                     nombreReal = new ArrayList<>();
                     edadAmigo = new ArrayList<>();
 
-
+                    //Recorremos array obteniendo valores y cargandolos al adaptador
                     for (int i = 0; i < mensajeAmigos.length(); i++) {
 
                         try {
@@ -564,8 +567,6 @@ public class MainUser extends AppCompatActivity implements SharedPreferences.OnS
                                 edadAmigo.add(edadAmigoObtenida);
 
 
-
-
                                 // añadir elementos al adaptador
                                 adapterAmigos = new AdapterAmigos(nombreAmigos, userAmigos, imagenesAmigos, tipoAmistad, nombreReal, edadAmigo);
                             }
@@ -577,6 +578,7 @@ public class MainUser extends AppCompatActivity implements SharedPreferences.OnS
 
 
                     }
+                    //Atrapamos la acción clic sobre un elemento del reciclerview
                     adapterAmigos.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -587,7 +589,10 @@ public class MainUser extends AppCompatActivity implements SharedPreferences.OnS
 
                             System.out.println(userSeleccinado);
 
-                            if(tipoSeleccinado == 1){
+                            //Según el tipo de relacion entre usuarios enviamos a una activity o a otra
+
+                            //Cuando el que se pulsa es un amigo confirmado
+                            if (tipoSeleccinado == 1) {
 
                                 Intent intent = new Intent(MainUser.this, PerfilActivity.class);
 
@@ -597,7 +602,8 @@ public class MainUser extends AppCompatActivity implements SharedPreferences.OnS
 
                                 startActivity(intent);
 
-                            }else if(tipoSeleccinado == 0){
+                                //Cuando el que se pulsa es un usuario que ha hecho una petición de amistad
+                            } else if (tipoSeleccinado == 0) {
                                 Intent intent = new Intent(MainUser.this, VecinoMain.class);
 
                                 String nombreSeleccionado = adapterAmigos.getNombre(recyclerViewHorizontal.getChildAdapterPosition(view));
@@ -605,21 +611,15 @@ public class MainUser extends AppCompatActivity implements SharedPreferences.OnS
                                 int edadSeleccionado = adapterAmigos.getEdad(recyclerViewHorizontal.getChildAdapterPosition(view));
 
                                 intent.putExtra("usuario", usuario);
-                                intent.putExtra("nombre",nombreSeleccionado);
+                                intent.putExtra("nombre", nombreSeleccionado);
                                 intent.putExtra("edad", edadSeleccionado);
                                 intent.putExtra("userVecino", userVecino);
 
                                 intent.putExtra("relacion", "solicitud");
 
-
                                 startActivity(intent);
-                                //
-
-
-
 
                             }
-
 
                         }
                     });

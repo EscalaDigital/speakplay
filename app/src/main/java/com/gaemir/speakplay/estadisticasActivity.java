@@ -34,29 +34,45 @@ import lecho.lib.hellocharts.util.ChartUtils;
 import lecho.lib.hellocharts.view.ColumnChartView;
 import lecho.lib.hellocharts.view.PieChartView;
 
+/**
+ * Activity para mostrar estadísticas
+ * ESta clase realiza consultas a la BD obteniendo datos agrupados y mostrandolo en gráficos mediante la libreria Hellocharts
+ *
+ * @author Gabriel Orozco Frutos
+ * @version 0.1, 2022/29/01
+ */
+
 public class estadisticasActivity extends AppCompatActivity {
 
     PieChartView graficoSexo, graficoJuegos;
     ColumnChartView graficoEdad;
 
+    /**
+     * Acciones a desarrollar al crear la Activity
+     *
+     * @param savedInstanceState Bundle (recursos Android) de la app
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_estadisticas);
 
+        //elementos necesarios para comprobar la conexión a internet
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
 
+        //comprobamos si existe conexión a internet
         if (networkInfo != null && networkInfo.isConnected()) {
-
-
             try {
+                //Realizamos la consulta de las estadísticas al servidor
                 obtenerTodos(this, Peticion.GET_ESTADISTICAS);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
         } else {
+
+            //mesaje y acción si no existe internet
             String mensaje2 = "No dispone de conexión a internet. \nSpeak and Play necesita conexión a internet para funcionar. \nIntentelo de nuevo más tarde";
             Toast.makeText(estadisticasActivity.this, mensaje2, Toast.LENGTH_LONG).show();
 
@@ -68,31 +84,30 @@ public class estadisticasActivity extends AppCompatActivity {
 
 
     /**
-     * Realiza la peticion a la url aportada y devuelve todos los usuarios
+     * Realiza la peticion a la url aportada y pasa el resultado al metodo procesartodos
+     * @param context contexto de la activity
+     * @param url dirección de la peticion al servidor
+     * @throws JSONException Si el JSON no es correcto o no existe se genera una excepción
      */
     public void obtenerTodos(Context context, String url) throws JSONException {
 
         String TAG = getClass().getName();
-
-
-        // Petición GET
+        //petición singleton mediante la libreria Volley
         VolleySingleton.getInstance(context).addToRequestQueue(
 
+                //obtenemos la respuesta
                 new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-
 
                     @Override
                     public void onResponse(JSONObject response) {
-                        // Procesar la respuesta Json
+                        // pasamos lo obtenido al procesador
                         procesarTodos(response);
-
 
                     }
                 },
                         new Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError error) {
-
                                 Log.e(TAG, "Error Volley: " + error.getMessage());
                             }
                         }
@@ -118,26 +133,26 @@ public class estadisticasActivity extends AppCompatActivity {
             switch (estado) {
                 case "1": // EXITO
 
+                    //obtenemos resultados de estadisticas por separado
                     JSONArray mensajeSexo = response.getJSONArray("sexo");
                     JSONArray mensajeEdad = response.getJSONArray("edad");
                     JSONArray mensajeJuegos = response.getJSONArray("juegos");
 
-
+                    //elementos de carga para los gráficos
                     List pieData = new ArrayList<>();
                     List pieDataJuegos = new ArrayList<>();
                     List<Column> pieDataEdad = new ArrayList<>();
                     List<SubcolumnValue> subcolumnValueList;
 
-
+                    //Elementos de la vista
                     graficoSexo = findViewById(R.id.chart);
                     graficoJuegos = findViewById(R.id.chartJuegos);
                     graficoEdad = (ColumnChartView) findViewById(R.id.chartedad);
 
+                    //Recorremos los elementos de SEXO y los pasamos al grafico de la vista
                     for (int i = 0; i < mensajeSexo.length(); i++) {
                         try {
                             JSONObject jsonObject = mensajeSexo.getJSONObject(i);
-
-
                             int sexo = Integer.valueOf(jsonObject.getString("sexo"));
                             int total = Integer.valueOf(jsonObject.getString("sexosuma"));
                             System.out.println(sexo);
@@ -145,7 +160,6 @@ public class estadisticasActivity extends AppCompatActivity {
                             if (sexo == 0) {
 
                                 pieData.add(new SliceValue(total, Color.BLUE).setLabel("Hombres"));
-
 
 
                             } else if (sexo == 1) {
@@ -165,6 +179,7 @@ public class estadisticasActivity extends AppCompatActivity {
                         graficoSexo.setPieChartData(pieChartData);
                     }
 
+                    //recorremos los elementos de EDAD y los pasamos al grafico de la vista
                     for (int i = 0; i < mensajeEdad.length(); i++) {
                         try {
                             JSONObject jsonObject = mensajeEdad.getJSONObject(i);
@@ -235,6 +250,7 @@ public class estadisticasActivity extends AppCompatActivity {
 
                     graficoEdad.setColumnChartData(graficoedad);
 
+                    //recorremos los elementos de JUEGOS y los pasamos al grafico de la vista
                     for (int i = 0; i < mensajeJuegos.length(); i++) {
                         try {
                             JSONObject jsonObject = mensajeJuegos.getJSONObject(i);
@@ -242,9 +258,7 @@ public class estadisticasActivity extends AppCompatActivity {
                             String juego = jsonObject.getString("juego");
                             int totalusuarios = Integer.valueOf(jsonObject.getString("usuarios"));
 
-
-                                pieDataJuegos.add(new SliceValue(totalusuarios, Color.BLUE).setLabel(juego));
-
+                            pieDataJuegos.add(new SliceValue(totalusuarios, Color.BLUE).setLabel(juego));
 
 
                         } catch (JSONException e) {

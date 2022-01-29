@@ -30,19 +30,33 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * Activity mapa acceso administrador
+ * Acceso al mapa, solo para el administrador. Realiza la búsqueda de todos los usuarios y los muestra a escala nacional
+ *
+ * @author Gabriel Orozco Frutos
+ * @version 0.1, 2022/29/01
+ */
 public class mapaAdminActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     double latitude, longitude;
     GoogleMap googleMap;
 
+    /**
+     * Acciones a desarrollar al crear la Activity
+     *
+     * @param savedInstanceState Bundle (recursos Android) de la app
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mapa_admin);
-
+        //elementos necesarios para cargar el mapa
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        //elementos necesarios para comprobar que existe conexión a internet
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
 
@@ -59,9 +73,13 @@ public class mapaAdminActivity extends AppCompatActivity implements OnMapReadyCa
 
     }
 
-
+    /**
+     * Otrapamos la creación del mapa
+     * @param googleMap Objeto Googlemap
+     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        //elementos necesarios para comprobar que existe conexión a internet
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         if (networkInfo == null && !(networkInfo.isConnected())) {
@@ -74,8 +92,10 @@ public class mapaAdminActivity extends AppCompatActivity implements OnMapReadyCa
             startActivity(intent);
         }
 
+
+        //llamamos elementos google maps y le pasamos los valores de ubicacion de usuarios
         this.googleMap = googleMap;
-        CameraPosition cameraPosition = CameraPosition.builder().target(new LatLng(40.4165,-3.70256)).zoom(6).build();
+        CameraPosition cameraPosition = CameraPosition.builder().target(new LatLng(40.4165, -3.70256)).zoom(6).build();
 
         googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
         try {
@@ -88,13 +108,16 @@ public class mapaAdminActivity extends AppCompatActivity implements OnMapReadyCa
 
     /**
      * Realiza la peticion a la url aportada y devuelve todos los usuarios
+     * @param context contexto app
+     * @param url direccion del web service desde donde obtenemos los valores de la consulta
+     * @throws JSONException debemos atrapar un error en caso de que el JSON obtenido desde el servidor no sea correcto o no obtengamos un JSON
      */
     public void obtenerVecinos(Context context, String url) throws JSONException {
 
         String TAG = getClass().getName();
 
 
-        // Petición GET
+        //petición singleton mediante la libreria Volley
         VolleySingleton.getInstance(context).addToRequestQueue(
 
                 new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -136,10 +159,10 @@ public class mapaAdminActivity extends AppCompatActivity implements OnMapReadyCa
 
             switch (estado) {
                 case "1": // EXITO
-
+                    //obtenemos el objeto info
                     JSONArray mensaje = response.getJSONArray("info");
 
-
+                    //Recorremos el JSONArray obteniendo los valores y cargandolos en el mapa
                     for (int i = 0; i < mensaje.length(); i++) {
                         try {
                             JSONObject jsonObject = mensaje.getJSONObject(i);
@@ -152,11 +175,11 @@ public class mapaAdminActivity extends AppCompatActivity implements OnMapReadyCa
                             String fotoVecino = "a" + jsonObject.getString("foto");
                             Context context = getBaseContext();
                             int id = context.getResources().getIdentifier(fotoVecino, "drawable", context.getPackageName());
-                            BitmapDrawable bitmapdraw = (BitmapDrawable)getResources().getDrawable(id);
+                            BitmapDrawable bitmapdraw = (BitmapDrawable) getResources().getDrawable(id);
                             Bitmap b = bitmapdraw.getBitmap();
                             Bitmap smallMarker = Bitmap.createScaledBitmap(b, 100, 100, false);
                             BitmapDescriptor icon = BitmapDescriptorFactory.fromBitmap(smallMarker);
-                            googleMap.addMarker(new MarkerOptions().position(new LatLng(latitudeVecino,longitudeVecino)).title(nombre).icon(icon));
+                            googleMap.addMarker(new MarkerOptions().position(new LatLng(latitudeVecino, longitudeVecino)).title(nombre).icon(icon));
 
 
                         } catch (JSONException e) {

@@ -35,6 +35,14 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+/**
+ * Activity mapa
+ * Acceso al mapa. Realiza la búsqueda por cercanía al usuario (con el parametro distancia) y los muestra con sus imagenes sobre el mapa
+ *
+ * @author Gabriel Orozco Frutos
+ * @version 0.1, 2022/29/01
+ */
+
 public class MapaActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     String usuario;
@@ -42,21 +50,30 @@ public class MapaActivity extends AppCompatActivity implements OnMapReadyCallbac
     double latitude, longitude;
     GoogleMap googleMap;
 
+    /**
+     * Acciones a desarrollar al crear la Activity
+     *
+     * @param savedInstanceState Bundle (recursos Android) de la app
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mapa);
 
+        //atrapamos los valores obtenidos del activity anterior
         usuario = getIntent().getExtras().getString("usuario");
         distancia = getIntent().getExtras().getInt("distancia");
         latitude = getIntent().getExtras().getDouble("latitude");
         longitude = getIntent().getExtras().getDouble("longitude");
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
+
+        //elementos necesarios para cargar el mapa
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        //elementos necesarios para comprobar que existe conexión a internet
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-
+        //comprobamos que existe conexion
         if (networkInfo == null && !(networkInfo.isConnected())) {
 
             String mensaje2 = "No dispone de conexión a internet. \nSpeak and Play necesita conexión a internet para funcionar. \nIntentelo de nuevo más tarde";
@@ -70,9 +87,13 @@ public class MapaActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
-
+    /**
+     * Otrapamos la creación del mapa
+     * @param googleMap Objeto Googlemap
+     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        //elementos necesarios para comprobar que existe conexión a internet
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         if (networkInfo == null && !(networkInfo.isConnected())) {
@@ -85,6 +106,7 @@ public class MapaActivity extends AppCompatActivity implements OnMapReadyCallbac
             startActivity(intent);
         }
 
+        //llamamos elementos google maps y le pasamos los valores de ubicacion de usuarios
         this.googleMap = googleMap;
         CameraPosition cameraPosition = CameraPosition.builder().target(new LatLng(latitude,longitude)).zoom(13).build();
 
@@ -98,14 +120,16 @@ public class MapaActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     /**
-     * Realiza la peticion a la url aportada y devuelve todos los usuarios dentro de la distancia establecida
+     *  Realiza la peticion a la url aportada y devuelve todos los usuarios dentro de la distancia establecida
+     * @param context contexto app
+     * @param url direccion del web service desde donde obtenemos los valores de la consulta
+     * @throws JSONException debemos atrapar un error en caso de que el JSON obtenido desde el servidor no sea correcto o no obtengamos un JSON
      */
     public void obtenerVecinos(Context context, String url) throws JSONException {
 
         String TAG = getClass().getName();
 
-
-        // Petición GET
+        //petición singleton mediante la libreria Volley
         VolleySingleton.getInstance(context).addToRequestQueue(
 
                 new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -113,10 +137,8 @@ public class MapaActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                     @Override
                     public void onResponse(JSONObject response) {
-                        // Procesar la respuesta Json
+                        // pasamos lo obtenido al procesador
                         procesarVecinos(response);
-
-
                     }
                 },
                         new Response.ErrorListener() {
@@ -126,10 +148,8 @@ public class MapaActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 Log.e(TAG, "Error Volley: " + error.getMessage());
                             }
                         }
-
                 )
         );
-
 
     }
 
@@ -147,10 +167,10 @@ public class MapaActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             switch (estado) {
                 case "1": // EXITO
-
+                    //obtenemos el objeto info
                     JSONArray mensaje = response.getJSONArray("info");
 
-
+                    //Recorremos el JSONArray obteniendo los valores y cargandolos en el mapa
                     for (int i = 0; i < mensaje.length(); i++) {
                         try {
                             JSONObject jsonObject = mensaje.getJSONObject(i);

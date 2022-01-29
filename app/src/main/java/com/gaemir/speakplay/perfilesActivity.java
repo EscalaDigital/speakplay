@@ -25,6 +25,14 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+/**
+ * Activity perfiles (acceso admin)
+ * Activity que muestra todos los usuarios para que el admin pueda consultarlos
+ *
+ * @author Gabriel Orozco Frutos
+ * @version 0.1, 2022/29/01
+ */
+
 public class perfilesActivity extends AppCompatActivity {
 
     //Elementos para el recyclerview
@@ -35,14 +43,20 @@ public class perfilesActivity extends AppCompatActivity {
     AdapterVecinos adapterVecinos;
     LinearLayoutManager verticalLayout;
 
+    /**
+     * Acciones a desarrollar al crear la Activity
+     *
+     * @param savedInstanceState Bundle (recursos Android) de la app
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_perfiles);
 
+        //elementos necesarios para comprobar que existe conexión a internet
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-
+        //comprobamos que existe conexion
         if (networkInfo != null && networkInfo.isConnected()) {
 
             //Reciclerview vertical//
@@ -73,21 +87,23 @@ public class perfilesActivity extends AppCompatActivity {
 
     /**
      * Realiza la peticion a la url aportada y devuelve todos los usuarios
+     * @param context contexto app
+     * @param url direccion del web service desde donde obtenemos los valores de la consulta
+     * @throws JSONException debemos atrapar un error en caso de que el JSON obtenido desde el servidor no sea correcto o no obtengamos un JSON
      */
     public void obtenerTodos(Context context, String url) throws JSONException {
 
         String TAG = getClass().getName();
 
 
-        // Petición GET
+        //petición singleton mediante la libreria Volley
         VolleySingleton.getInstance(context).addToRequestQueue(
 
                 new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
 
-
                     @Override
                     public void onResponse(JSONObject response) {
-                        // Procesar la respuesta Json
+                        // pasamos lo obtenido al procesador
                         procesarTodos(response);
 
 
@@ -100,7 +116,6 @@ public class perfilesActivity extends AppCompatActivity {
                                 Log.e(TAG, "Error Volley: " + error.getMessage());
                             }
                         }
-
                 )
         );
 
@@ -121,7 +136,7 @@ public class perfilesActivity extends AppCompatActivity {
 
             switch (estado) {
                 case "1": // EXITO
-
+                    //obtenemos el objeto info
                     JSONArray mensaje = response.getJSONArray("info");
 
 
@@ -132,16 +147,12 @@ public class perfilesActivity extends AppCompatActivity {
                     edadVecinos = new ArrayList<>();
                     fotosVecinos = new ArrayList<>();
 
-
+                    //Recorremos el JSONArray obteniendo los valores y cargandolos en el reciclerview
                     for (int i = 0; i < mensaje.length(); i++) {
                         try {
                             JSONObject jsonObject = mensaje.getJSONObject(i);
 
-
                             int edad = Integer.valueOf(jsonObject.getString("Edad"));
-
-
-
 
                             String nombreVecino = jsonObject.getString("Nombre") + " " + jsonObject.getString("Apellidos");
                             System.out.println(jsonObject.getString("Nombre") + " " + jsonObject.getString("Apellidos"));
@@ -161,7 +172,7 @@ public class perfilesActivity extends AppCompatActivity {
 
 
                             // añadir elementos al adaptador
-                            adapterVecinos = new AdapterVecinos(nombreVertical, imagenesVecinos, juegosVecinos,userVecinos);
+                            adapterVecinos = new AdapterVecinos(nombreVertical, imagenesVecinos, juegosVecinos, userVecinos);
 
 
                         } catch (JSONException e) {
@@ -171,6 +182,7 @@ public class perfilesActivity extends AppCompatActivity {
 
                     }
 
+                    //Cuando hacemos clic sobre un elemento abrimos la actividad donde se muestra el perfil
                     adapterVecinos.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -186,12 +198,9 @@ public class perfilesActivity extends AppCompatActivity {
 
                             startActivity(intent);
 
-
-
-
                         }
                     });
-                    // añador elementos del adapter
+                    // añadir elementos del adapter
                     recyclerViewVertical.setAdapter(adapterVecinos);
                     break;
                 case "2": // FALLIDO

@@ -12,6 +12,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * Clase con urls
+ * URLs de acceso al web service de consultas
+ *
+ * @author Gabriel Orozco Frutos
+ * @version 0.1, 2022/29/01
+ */
 public class Peticion {
 
     /**

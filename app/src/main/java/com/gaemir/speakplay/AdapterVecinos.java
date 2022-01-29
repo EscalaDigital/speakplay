@@ -13,40 +13,54 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-// The adapter class which
-// extends RecyclerView Adapter
-public class AdapterVecinos extends RecyclerView.Adapter<AdapterVecinos.MyView> implements View.OnClickListener , Serializable {
 
-    // List with String type
+/**
+ * Adapter de vecinos (personas que cumplen los requisitos de búsqueda establecidos en preferences)
+ * Este adapter recopila los datos referentes a vecinos cercanos al usuario
+ *
+ * @author Gabriel Orozco Frutos
+ * @version 0.1, 2022/29/01
+ */
+public class AdapterVecinos extends RecyclerView.Adapter<AdapterVecinos.MyView> implements View.OnClickListener, Serializable {
+
+    // Elementros para recopilar datos en el adaptador
 
     private List<String> nombre;
     private List<Drawable> imagen;
     private List<String> juego;
     private List<String> user;
 
-    public String getNombre(int i) {
-        return nombre.get(i);
-    }
 
+    //getters necesarios para obtener datos del adapter
+
+    /**
+     * Getter que obtiene el usuario seleccionado
+     *
+     * @param i posicion en el List
+     * @return
+     */
     public String getUser(int i) {
         return user.get(i);
     }
 
     private View.OnClickListener listener;
 
-
-    // View Holder class which
-    // extends RecyclerView.ViewHolder
+    /**
+     * Clase que extiende de reciclerview para poder cargar sus funciones y vincular los datos a este
+     */
     public class MyView extends RecyclerView.ViewHolder {
 
-        // Text View
+        //Elementos del recyclerview
 
         TextView textView, juego;
         CircleImageView imagenAmigo;
 
 
-        // parameterised constructor for View Holder class
-        // which takes the view as a parameter
+        /**
+         * Constructor de la vista
+         *
+         * @param view elementos layout prediseñado
+         */
         public MyView(View view) {
             super(view);
 
@@ -57,9 +71,15 @@ public class AdapterVecinos extends RecyclerView.Adapter<AdapterVecinos.MyView> 
         }
     }
 
-    // Constructor for adapter class
-    // which takes a list of String type
-    public AdapterVecinos(List<String> horizontalList, List<Drawable> imagen, List<String> juego,List<String> user) {
+    /**
+     * Constructor de la clase. Obtenemos los diferentes valores de vecinos mediante listas de valores
+     *
+     * @param horizontalList Nombre del usuario
+     * @param imagen         Imagen del Usuario
+     * @param juego          Juego del Usuario
+     * @param user           Usuario del Usuario
+     */
+    public AdapterVecinos(List<String> horizontalList, List<Drawable> imagen, List<String> juego, List<String> user) {
 
         this.user = user;
         this.nombre = horizontalList;
@@ -67,50 +87,66 @@ public class AdapterVecinos extends RecyclerView.Adapter<AdapterVecinos.MyView> 
         this.juego = juego;
     }
 
-    // Override onCreateViewHolder which deals
-    // with the inflation of the card layout
-    // as an item for the RecyclerView.
+    /**
+     * Clases que pasa los elementos a la vista
+     *
+     * @param parent
+     * @param viewType
+     * @return
+     */
     @Override
     public MyView onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        // Inflate item.xml using LayoutInflator
+
         View cercanosView = LayoutInflater.from(parent.getContext()).inflate(R.layout.cercanos_view, parent, false);
 
         cercanosView.setOnClickListener(this);
 
-
-        // return cercanosView
         return new MyView(cercanosView);
 
 
     }
 
-    // Override onBindViewHolder which deals
-    // with the setting of different data
-    // and methods related to clicks on
-    // particular items of the RecyclerView.
+    /**
+     * Clase que carga los elementos en el reciclerview (cambiamos de color el fondo de cada Amigo si la amistad esta confirmada o no)
+     *
+     * @param holder
+     * @param position
+     */
     @Override
     public void onBindViewHolder(final MyView holder, final int position) {
 
-        // Set the text of each item of
-        // Recycler view with the list items
+
         holder.textView.setText(nombre.get(position));
         holder.juego.setText(juego.get(position));
         holder.imagenAmigo.setImageDrawable(imagen.get(position));
 
     }
 
-    // Vaciar el adapter
+    /**
+     * getter que obtiene el tamaño de la lista de usuarios
+     *
+     * @return numero de usuarios
+     */
     @Override
     public int getItemCount() {
         return nombre.size();
     }
 
-
+    /**
+     * Listener que se mantiene a la espera de un clic sobre un amigo
+     *
+     * @param listener listener
+     */
     public void setOnClickListener(View.OnClickListener listener) {
         this.listener = listener;
     }
 
+    /**
+     * Método que atrapa la acccion de onclick y llama al listener
+     *
+     * @param v
+     */
     @Override
     public void onClick(View v) {
         if (listener != null) {
@@ -118,27 +154,5 @@ public class AdapterVecinos extends RecyclerView.Adapter<AdapterVecinos.MyView> 
         }
     }
 
-    public void clear() {
-        int size = nombre.size();
-        System.out.println(size);
-        System.out.println(nombre.get(4));
-        System.out.println(juego.get(4));
-        System.out.println(imagen.get(4));
-        if (size > 0) {
-            for (int i = 0; i < size; i++) {
-                System.out.println("vuelta" + i);
-                try {
-                    nombre.remove(i);
-                    juego.remove(i);
-                    imagen.remove(i);
-                    notifyItemRemoved(i);
-                } catch (Exception e) {
-                    System.out.println("Problema al intentar borrar un elemento");
-                }
 
-            }
-
-
-        }
-    }
 }
